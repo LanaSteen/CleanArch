@@ -19,7 +19,9 @@ namespace MyApp.Infrastructure
             });
 
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<IHotelRepository, HotelRepository>();
             services.AddScoped<IExternalVendorRepository, ExternalVendorRepository>();
+        
 
             services.AddHttpClient<ICoindeskHttpClientService, CoindeskHttpClientService>(option =>
             {
