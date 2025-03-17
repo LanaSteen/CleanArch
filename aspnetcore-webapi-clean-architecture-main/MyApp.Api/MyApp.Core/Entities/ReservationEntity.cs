@@ -8,16 +8,19 @@ namespace MyApp.Core.Entities
 {
     public class ReservationEntity
     {
-        public int Id { get; set; }
+        public int Id { get; set; }  // Primary Key (Identity)
         public DateTime CheckInDate { get; set; }
         public DateTime CheckOutDate { get; set; }
 
         // Foreign Keys
-        public int GuestId { get; set; }
-        public GuestEntity Guest { get; set; } = null!;
-
+        public int HotelId { get; set; }
         public int RoomId { get; set; }
-        public RoomEntity Room { get; set; } = null!;
+        public int GuestId { get; set; }
+
+        // Navigation properties
+        public HotelEntity Hotel { get; set; }
+        public RoomEntity Room { get; set; }
+        public GuestEntity Guest { get; set; }
     }
 
 }

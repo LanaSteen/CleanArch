@@ -36,6 +36,11 @@ namespace MyApp.Infrastructure.Data
                 .WithMany(g => g.Reservations)
                 .HasForeignKey(r => r.GuestId)
                 .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<RoomEntity>()
+              .Property(r => r.Price)
+              .HasPrecision(18, 4);
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

@@ -9,13 +9,16 @@ namespace MyApp.Core.Entities
     public class RoomEntity
     {
         public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public bool IsAvailable { get; set; } = true;
+        public string Name { get; set; }
+        public bool IsAvailable { get; set; }
         public decimal Price { get; set; }
 
-        // Foreign Key
+        // Foreign Key for Hotel (M:1 relationship)
         public int HotelId { get; set; }
-        public HotelEntity Hotel  { get; set; } = null!;
+        public HotelEntity Hotel { get; set; }
+
+        // Navigation property for Reservations (M:M relationship)
+        public ICollection<ReservationEntity> Reservations { get; set; }
     }
 
 }

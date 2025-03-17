@@ -9,15 +9,20 @@ namespace MyApp.Core.Entities
     public class HotelEntity
     {
         public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public int Rating { get; set; } // Range 1-5
-        public string Country { get; set; } = string.Empty;
-        public string City { get; set; } = string.Empty;
-        public string Address { get; set; } = string.Empty;
+        public string Name { get; set; }
+        public int Rating { get; set; }  // Rating between 1 and 5
+        public string Country { get; set; }
+        public string City { get; set; }
+        public string Address { get; set; }
 
-        // Relationships
-        public ManagerEntity? Manager { get; set; }
-        public ICollection<RoomEntity> Rooms { get; set; } = new List<RoomEntity>();
-        public ICollection<ReservationEntity> Reservations { get; set; } = new List<ReservationEntity>();
+        // Navigation property for Manager (1:1 relationship)
+        public int ManagerId { get; set; }
+        public ManagerEntity Manager { get; set; }
+
+        // Navigation property for Rooms (1:M relationship)
+        public ICollection<RoomEntity> Rooms { get; set; }
+
+        // Navigation property for Reservations (M:M relationship)
+        public ICollection<ReservationEntity> Reservations { get; set; }
     }
 }

@@ -1,4 +1,7 @@
 using MyApp.Api;
+using MyApp.Application.Validators;
+using FluentValidation;
+using MyApp.Application.Profiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,10 +13,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //builder.Services.Configure<ConnectionStringOptions>(builder.Configuration.GetSection(ConnectionStringOptions.SectionName));
-
+builder.Services.AddAutoMapper(typeof(HotelProfile));
+builder.Services.AddValidatorsFromAssemblyContaining<CreateHotelCommandValidator>();
 builder.Services.AddAppDI(builder.Configuration);
 
 var app = builder.Build();
+
+
+ 
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

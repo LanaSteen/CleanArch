@@ -8,13 +8,16 @@ namespace MyApp.Core.Entities
 {
     public class GuestEntity
     {
-        public int Id { get; set; }
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
-        public string PersonalId { get; set; } = string.Empty;
-        public string PhoneNumber { get; set; } = string.Empty;
+        public int Id { get; set; }  // Primary Key (Identity)
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string PersonalNumber { get; set; }  // Personal ID
+        public string PhoneNumber { get; set; }
 
-        public ICollection<ReservationEntity> Reservations { get; set; } = new List<ReservationEntity>();
+        // Navigation property for Reservations (M:M relationship)
+        public ICollection<ReservationEntity> Reservations
+        {
+            get; set;
+        }
     }
-
 }
