@@ -27,7 +27,7 @@ namespace MyApp.Api.Controllers
         public async Task<IActionResult> GetAllRoomsAsync()
         {
             var rooms = await sender.Send(new GetAllRoomsQuery());
-            var roomsDto = mapper.Map<List<RoomDto>>(rooms);  // Map from RoomEntity to RoomDto
+            var roomsDto = mapper.Map<List<RoomDto>>(rooms);
             return Ok(roomsDto);
         }
 

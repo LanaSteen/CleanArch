@@ -12,6 +12,6 @@ namespace MyApp.Application.DTOs.Reservation
         public DateTime CheckInDate { get; set; }
         public DateTime CheckOutDate { get; set; }
         public string RoomName { get; set; }
-        public string GuestName { get; set; }  // You can map it like "Guest.FirstName + ' ' + Guest.LastName"
+        public string GuestName { get; set; } 
     }
 }
