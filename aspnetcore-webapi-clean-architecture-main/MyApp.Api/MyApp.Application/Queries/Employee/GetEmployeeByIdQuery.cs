@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyApp.Application.Queries
+namespace MyApp.Application.Queries.Employee
 {
     public record GetEmployeeByIdQuery(Guid EmployeeId) : IRequest<EmployeeEntity>;
 

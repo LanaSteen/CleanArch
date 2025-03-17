@@ -1,13 +1,14 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using MyApp.Application.Commands;
-using MyApp.Application.Queries;
+using MyApp.Application.Commands.Hotel;
+using MyApp.Application.Queries.Hotel;
 using MyApp.Core.Entities;
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
+using MyApp.Application.DTOs.Hotel;
 
 namespace HotelManagementSystem.Controllers
 {
@@ -69,11 +70,19 @@ namespace HotelManagementSystem.Controllers
             return Ok(result);
         }
 
-        // PUT api/hotels/{hotelId}
         [HttpPut("{hotelId}")]
-        public async Task<IActionResult> UpdateHotelAsync([FromRoute] int hotelId, [FromBody] HotelEntity hotel)
+        public async Task<IActionResult> UpdateHotelAsync([FromRoute] int hotelId, [FromBody] UpdateHotelRequest updateHotelRequest)
         {
-            var result = await _sender.Send(new UpdateHotelCommand(hotelId, hotel));
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // Convert DTO to Entity using AutoMapper
+            var updatedHotelEntity = _mapper.Map<HotelEntity>(updateHotelRequest);
+
+            var result = await _sender.Send(new UpdateHotelCommand(hotelId, updateHotelRequest));
+
             return Ok(result);
         }
 

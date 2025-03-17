@@ -2,7 +2,7 @@
 using MyApp.Core.Entities;
 using MyApp.Core.Interfaces;
 
-namespace MyApp.Application.Commands
+namespace MyApp.Application.Commands.Employee
 {
     public record UpdateEmployeeCommand(Guid EmployeeId, EmployeeEntity Employee)
         : IRequest<EmployeeEntity>;

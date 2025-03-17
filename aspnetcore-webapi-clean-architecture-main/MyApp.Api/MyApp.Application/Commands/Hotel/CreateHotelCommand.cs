@@ -4,7 +4,7 @@ using MyApp.Core.Interfaces;
 using FluentValidation;
 using FluentValidation.Results;
 
-namespace MyApp.Application.Commands
+namespace MyApp.Application.Commands.Hotel
 {
     public record CreateHotelCommand(HotelEntity Hotel) : IRequest<HotelEntity>;
 

@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MyApp.Application.Commands;
-using MyApp.Application.Queries;
+using MyApp.Application.Commands.Employee;
+using MyApp.Application.Queries.Employee;
 using MyApp.Core.Entities;
 
 namespace MyApp.Api.Controllers

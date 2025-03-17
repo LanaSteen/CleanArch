@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using MyApp.Application.Commands;
+using MyApp.Application.Commands.Hotel;
 using MyApp.Core.Entities;
 
 namespace MyApp.Application.Validators

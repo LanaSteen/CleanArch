@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using MyApp.Core.Interfaces;
 
-namespace MyApp.Application.Commands
+namespace MyApp.Application.Commands.Employee
 {
     public record DeleteEmployeeCommand(Guid EmployeeId) : IRequest<bool>;
 

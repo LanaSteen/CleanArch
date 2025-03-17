@@ -2,7 +2,7 @@
 using MyApp.Core.Entities;
 using MyApp.Core.Interfaces;
 
-namespace MyApp.Application.Queries
+namespace MyApp.Application.Queries.Hotel
 {
     public record GetHotelByIdQuery(int HotelId) : IRequest<HotelEntity>;
 

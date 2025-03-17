@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using MyApp.Core.Interfaces;
 
-namespace MyApp.Application.Commands
+namespace MyApp.Application.Commands.Hotel
 {
     public record DeleteHotelCommand(int HotelId) : IRequest<bool>;
 

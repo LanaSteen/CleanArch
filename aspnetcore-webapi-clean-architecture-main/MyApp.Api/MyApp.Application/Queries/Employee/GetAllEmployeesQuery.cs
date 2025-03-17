@@ -2,7 +2,7 @@
 using MyApp.Core.Entities;
 using MyApp.Core.Interfaces;
 
-namespace MyApp.Application.Queries
+namespace MyApp.Application.Queries.Employee
 {
     public record GetAllEmployeesQuery() : IRequest<IEnumerable<EmployeeEntity>>;
     public class GetAllEmployeesQueryHandler(IEmployeeRepository employeeRepository)
