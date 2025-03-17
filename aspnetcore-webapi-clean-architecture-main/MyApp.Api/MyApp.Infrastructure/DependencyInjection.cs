@@ -22,6 +22,10 @@ namespace MyApp.Infrastructure
             services.AddScoped<IHotelRepository, HotelRepository>();
             services.AddScoped<IRoomRepository, RoomRepository>();
             services.AddScoped<IManagerRepository, ManagerRepository>();
+            services.AddScoped<IGuestRepository, GuestRepository>();
+
+            services.AddScoped<IReservationRepository, ReservationRepository>();
+
 
 
             services.AddScoped<IExternalVendorRepository, ExternalVendorRepository>();

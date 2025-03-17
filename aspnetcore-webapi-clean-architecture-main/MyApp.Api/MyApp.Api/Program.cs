@@ -16,6 +16,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(HotelProfile));
 builder.Services.AddAutoMapper(typeof(RoomProfile));
 builder.Services.AddAutoMapper(typeof(ManagerProfile));
+builder.Services.AddAutoMapper(typeof(GuestProfile));
+builder.Services.AddAutoMapper(typeof(ReservationProfile));
 builder.Services.AddValidatorsFromAssemblyContaining<CreateHotelCommandValidator>();
 builder.Services.AddAppDI(builder.Configuration);
 

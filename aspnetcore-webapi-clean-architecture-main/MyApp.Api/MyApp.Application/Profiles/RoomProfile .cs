@@ -18,9 +18,7 @@ namespace MyApp.Application.Profiles
                 .ForMember(dest => dest.HotelName, opt => opt.MapFrom(src => src.Hotel.Name))
                 .ForMember(dest => dest.Reservations, opt => opt.MapFrom(src => src.Reservations));
 
-            CreateMap<ReservationEntity, ReservationDto>()
-                .ForMember(dest => dest.RoomName, opt => opt.MapFrom(src => src.Room.Name))
-                .ForMember(dest => dest.GuestName, opt => opt.MapFrom(src => $"{src.Guest.FirstName} {src.Guest.LastName}"));
+           
 
             CreateMap<CreateRoomRequest, RoomEntity>();
             CreateMap<UpdateRoomRequest, RoomEntity>();

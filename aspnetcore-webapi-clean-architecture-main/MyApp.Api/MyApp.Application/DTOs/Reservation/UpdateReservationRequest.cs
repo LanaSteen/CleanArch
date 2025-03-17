@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace MyApp.Application.DTOs.Reservation
 {
-    public class ReservationDto
+    public class UpdateReservationRequest
     {
-        public int Id { get; set; }
         public DateTime CheckInDate { get; set; }
         public DateTime CheckOutDate { get; set; }
         public int HotelId { get; set; }
