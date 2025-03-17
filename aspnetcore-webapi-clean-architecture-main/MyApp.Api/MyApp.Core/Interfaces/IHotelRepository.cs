@@ -13,6 +13,10 @@ namespace MyApp.Core.Interfaces
         Task<HotelEntity> GetHotelByIdAsync(int id);
         Task<HotelEntity> AddHotelAsync(HotelEntity entity);
         Task<HotelEntity> UpdateHotelAsync(int hotelId, HotelEntity entity);
-        Task<bool> DeleteHotelAsync(int hotelId);
+        Task<(bool IsSuccess, string Message)> DeleteHotelAsync(int hotelId);
+
+
+        //Task<List<HotelEntity>> GetAllHotelsAsync();
+        Task<List<HotelEntity>> GetHotelsByFilterAsync(string? country, string? city, int? minRating, int? maxRating);
     }
 }

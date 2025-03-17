@@ -19,7 +19,11 @@ namespace MyApp.Infrastructure.Repositories
 
         public async Task<HotelEntity> GetHotelByIdAsync(int id)
         {
-            return await dbContext.Hotels.FirstOrDefaultAsync(x => x.Id == id);
+            return await dbContext.Hotels
+                .Include(h => h.Manager)        
+                .Include(h => h.Rooms)       
+                .Include(h => h.Reservations)  
+                .FirstOrDefaultAsync(h => h.Id == id);
         }
 
         public async Task<HotelEntity> AddHotelAsync(HotelEntity entity)
@@ -48,17 +52,61 @@ namespace MyApp.Infrastructure.Repositories
             return entity;
         }
 
-        public async Task<bool> DeleteHotelAsync(int hotelId)
+        public async Task<(bool IsSuccess, string Message)> DeleteHotelAsync(int hotelId)
         {
-            var hotel = await dbContext.Hotels.FirstOrDefaultAsync(x => x.Id == hotelId);
+            var hotel = await dbContext.Hotels
+                .Include(h => h.Rooms)
+                .Include(h => h.Reservations)
+                .Include(h => h.Manager)  // Include manager to remove it
+                .FirstOrDefaultAsync(x => x.Id == hotelId);
 
-            if (hotel is not null)
+            if (hotel is null)
             {
-                dbContext.Hotels.Remove(hotel);
-                return await dbContext.SaveChangesAsync() > 0;
+                return (false, "Hotel not found with the provided ID.");
             }
 
-            return false;
+            if (hotel.Rooms.Any() || hotel.Reservations.Any())
+            {
+                return (false, "Hotel cannot be deleted because there are active rooms or reservations.");
+            }
+
+            // Delete the manager if associated with the hotel
+            if (hotel.Manager != null)
+            {
+                dbContext.Managers.Remove(hotel.Manager);  // Delete the manager
+            }
+
+            dbContext.Hotels.Remove(hotel);  // Delete the hotel
+            await dbContext.SaveChangesAsync();
+
+            return (true, "Hotel and its associated manager deleted successfully.");
+        }
+
+        public async Task<List<HotelEntity>> GetHotelsByFilterAsync(string? country, string? city, int? minRating, int? maxRating)
+        {
+            var query = dbContext.Hotels.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(country))
+            {
+                query = query.Where(h => h.Country == country);
+            }
+
+            if (!string.IsNullOrWhiteSpace(city))
+            {
+                query = query.Where(h => h.City == city);
+            }
+
+            if (minRating.HasValue)
+            {
+                query = query.Where(h => h.Rating >= minRating.Value);
+            }
+
+            if (maxRating.HasValue)
+            {
+                query = query.Where(h => h.Rating <= maxRating.Value);
+            }
+
+            return await query.ToListAsync();
         }
     }
 }

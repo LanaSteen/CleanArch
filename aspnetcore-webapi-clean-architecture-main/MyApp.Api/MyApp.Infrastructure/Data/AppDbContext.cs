@@ -18,7 +18,7 @@ namespace MyApp.Infrastructure.Data
                 .HasOne(h => h.Manager)
                 .WithOne(m => m.Hotel)
                 .HasForeignKey<ManagerEntity>(m => m.HotelId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<HotelEntity>()
                 .HasMany(h => h.Rooms)

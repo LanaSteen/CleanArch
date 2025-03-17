@@ -75,12 +75,28 @@ namespace HotelManagementSystem.Controllers
 
             return Ok(result);
         }
-
         [HttpDelete("{hotelId}")]
         public async Task<IActionResult> DeleteHotelAsync([FromRoute] int hotelId)
         {
-            var result = await _sender.Send(new DeleteHotelCommand(hotelId));
-            return Ok(result);
+            var message = await _sender.Send(new DeleteHotelCommand(hotelId));
+
+            if (message.StartsWith("Hotel cannot") || message.StartsWith("Hotel not found"))
+            {
+                return BadRequest(message);
+            }
+
+            return Ok(message);
+        }
+
+        [HttpGet("filter")]
+        public async Task<IActionResult> GetHotelsByFilterAsync(
+            [FromQuery] string? country,
+            [FromQuery] string? city,
+            [FromQuery] int? minRating,
+            [FromQuery] int? maxRating)
+        {
+            var hotels = await _sender.Send(new GetHotelsByFilterQuery(country, city, minRating, maxRating));
+            return Ok(hotels); 
         }
     }
 }

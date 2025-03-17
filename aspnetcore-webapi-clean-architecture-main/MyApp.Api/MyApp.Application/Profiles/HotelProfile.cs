@@ -15,6 +15,9 @@ namespace MyApp.Application.Profiles
             CreateMap<HotelEntity, HotelDto>();
             CreateMap<CreateHotelRequest, HotelEntity>();
             CreateMap<UpdateHotelRequest, HotelEntity>();
+
+            CreateMap<HotelEntity, HotelDto>()
+           .ForMember(dest => dest.ManagerId, opt => opt.MapFrom(src => src.ManagerId));
         }
     }
 }
