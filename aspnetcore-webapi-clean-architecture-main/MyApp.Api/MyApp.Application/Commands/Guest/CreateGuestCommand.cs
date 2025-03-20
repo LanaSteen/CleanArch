@@ -3,15 +3,12 @@ using MediatR;
 using MyApp.Application.DTOs.Guest;
 using MyApp.Core.Entities;
 using MyApp.Core.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MyApp.Application.Commands.Guest
 {
-    public record CreateGuestCommand(CreateGuestRequest GuestRequest) : IRequest<GuestDto>;
+    public record CreateGuestCommand(CreateGuestRequest GuestRequest) : IRequest<GuestDto>; // Remove the password from the command
+
     public class CreateGuestCommandHandler : IRequestHandler<CreateGuestCommand, GuestDto>
     {
         private readonly IGuestRepository _guestRepository;
@@ -26,9 +23,10 @@ namespace MyApp.Application.Commands.Guest
         public async Task<GuestDto> Handle(CreateGuestCommand request, CancellationToken cancellationToken)
         {
             var guestEntity = _mapper.Map<GuestEntity>(request.GuestRequest);
-            var createdGuest = await _guestRepository.AddAsync(guestEntity);
+
+            var createdGuest = await _guestRepository.AddAsync(guestEntity); 
+
             return _mapper.Map<GuestDto>(createdGuest);
         }
     }
-
 }

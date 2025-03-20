@@ -1,16 +1,19 @@
 ﻿using MyApp.Core.Entities;
-
-
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MyApp.Core.Interfaces
 {
     public interface IManagerRepository
     {
-        Task<ManagerEntity> AddAsync(ManagerEntity manager);
+        Task<List<ManagerEntity>> GetAllAsync();
+        Task<ManagerEntity> GetByIdAsync(int id);
+        Task<ManagerEntity> GetManagerByHotelIdAsync(int hotelId);
+        Task<ManagerEntity> AddAsync(ManagerEntity manager, string password);
         Task<ManagerEntity> UpdateAsync(ManagerEntity manager);
         Task<bool> DeleteAsync(ManagerEntity manager);
-        Task<ManagerEntity> GetByIdAsync(int id);
-        Task<List<ManagerEntity>> GetAllAsync();
-        Task<ManagerEntity> GetManagerByHotelIdAsync(int hotelId);
+        Task<UserEntity> GetUserByManagerIdAsync(int managerId); 
+        Task UpdateUserAsync(UserEntity user); 
     }
 }

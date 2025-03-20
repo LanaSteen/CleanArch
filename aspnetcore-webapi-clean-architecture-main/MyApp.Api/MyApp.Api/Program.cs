@@ -2,6 +2,7 @@ using MyApp.Api;
 using MyApp.Application.Validators;
 using FluentValidation;
 using MyApp.Application.Profiles;
+using MyApp.Infrastructure.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +38,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.MapControllers();
 
 app.Run();

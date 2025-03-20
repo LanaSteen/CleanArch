@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MyApp.Api.Controllers
 {
-    [Route("api/managers")]
+    [Route("api/hotel/managers")]
     [ApiController]
     public class ManagerController : ControllerBase
     {
@@ -22,6 +22,7 @@ namespace MyApp.Api.Controllers
             _mapper = mapper;
         }
 
+        // Create Manager
         [HttpPost]
         public async Task<IActionResult> CreateManagerAsync([FromBody] CreateManagerRequest managerRequest)
         {
@@ -32,7 +33,6 @@ namespace MyApp.Api.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                // If the hotel already has a manager, return a BadRequest with the error message
                 return BadRequest(ex.Message);
             }
         }
@@ -48,17 +48,14 @@ namespace MyApp.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetManagerByIdAsync([FromRoute] int id)
         {
-           
             var manager = await _sender.Send(new GetManagerByIdQuery(id));
             if (manager == null)
             {
-                return NotFound(); 
+                return NotFound();  
             }
 
-
             var managerDto = _mapper.Map<ManagerDto>(manager);
-
-            return Ok(managerDto); 
+            return Ok(managerDto);  
         }
 
         [HttpPut("{managerId}")]
@@ -67,14 +64,13 @@ namespace MyApp.Api.Controllers
             try
             {
                 var result = await _sender.Send(new UpdateManagerCommand(managerId, managerRequest));
-                return Ok(result);
+                return Ok(result); 
             }
             catch (InvalidOperationException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(ex.Message);  
             }
         }
-
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteManagerAsync([FromRoute] int id)
@@ -83,10 +79,10 @@ namespace MyApp.Api.Controllers
 
             if (!result)
             {
-                return NotFound(); 
+                return NotFound();  
             }
 
-            return NoContent(); 
+            return NoContent();  
         }
     }
 }

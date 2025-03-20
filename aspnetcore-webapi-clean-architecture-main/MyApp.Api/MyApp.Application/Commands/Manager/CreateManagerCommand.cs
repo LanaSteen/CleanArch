@@ -15,13 +15,11 @@ namespace MyApp.Application.Commands.Manager
     {
         private readonly IManagerRepository _managerRepository;
         private readonly IMapper _mapper;
-        private readonly IHotelRepository _hotelRepository;
 
-        public CreateManagerCommandHandler(IManagerRepository managerRepository, IMapper mapper, IHotelRepository hotelRepository)
+        public CreateManagerCommandHandler(IManagerRepository managerRepository, IMapper mapper)
         {
             _managerRepository = managerRepository;
             _mapper = mapper;
-            _hotelRepository = hotelRepository;
         }
 
         public async Task<ManagerDto> Handle(CreateManagerCommand request, CancellationToken cancellationToken)
@@ -31,11 +29,13 @@ namespace MyApp.Application.Commands.Manager
             {
                 throw new InvalidOperationException("This hotel already has a manager.");
             }
+
             var managerEntity = _mapper.Map<ManagerEntity>(request.ManagerRequest);
 
-            var createdManager = await _managerRepository.AddAsync(managerEntity);
+            var createdManager = await _managerRepository.AddAsync(managerEntity, request.ManagerRequest.Password);
 
             return _mapper.Map<ManagerDto>(createdManager);
         }
     }
+
 }

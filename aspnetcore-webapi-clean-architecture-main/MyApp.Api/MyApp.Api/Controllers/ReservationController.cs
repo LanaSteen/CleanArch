@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MyApp.Api.Controllers
 {
-    [Route("api/reservations")]
+    [Route("api/hotel/reservations")]
     [ApiController]
     public class ReservationController : ControllerBase
     {

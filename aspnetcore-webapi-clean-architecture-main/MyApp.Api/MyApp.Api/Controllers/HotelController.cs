@@ -12,7 +12,7 @@ using MyApp.Application.DTOs.Hotel;
 
 namespace HotelManagementSystem.Controllers
 {
-    [Route("api/hotels")]
+    [Route("api/hotel/hotels")]
     [ApiController]
     public class HotelController : ControllerBase
     {

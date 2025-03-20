@@ -1,8 +1,6 @@
 ﻿using MyApp.Core.Entities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MyApp.Core.Interfaces
@@ -11,7 +9,7 @@ namespace MyApp.Core.Interfaces
     {
         Task<List<GuestEntity>> GetAllAsync();
         Task<GuestEntity> GetByIdAsync(int id);
-        Task<GuestEntity> AddAsync(GuestEntity entity);
+        Task<GuestEntity> AddAsync(GuestEntity entity); 
         Task<GuestEntity> UpdateAsync(GuestEntity entity);
         Task<bool> DeleteAsync(GuestEntity entity);
     }

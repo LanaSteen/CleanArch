@@ -1,17 +1,17 @@
 ﻿using AutoMapper;
 using MediatR;
 using MyApp.Application.DTOs.Manager;
+using MyApp.Application.Exceptions;
 using MyApp.Core.Entities;
 using MyApp.Core.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MyApp.Application.Commands.Manager
 {
     public record UpdateManagerCommand(int Id, UpdateManagerRequest ManagerRequest) : IRequest<ManagerDto>;
+
     public class UpdateManagerCommandHandler : IRequestHandler<UpdateManagerCommand, ManagerDto>
     {
         private readonly IManagerRepository _managerRepository;
@@ -27,12 +27,15 @@ namespace MyApp.Application.Commands.Manager
         {
             var managerEntity = await _managerRepository.GetByIdAsync(request.Id);
             if (managerEntity == null)
-                return null;
+            {
+                throw new NotFoundException("Manager not found.");
+            }
 
             _mapper.Map(request.ManagerRequest, managerEntity);
+
             var updatedManager = await _managerRepository.UpdateAsync(managerEntity);
+
             return _mapper.Map<ManagerDto>(updatedManager);
         }
     }
-
 }

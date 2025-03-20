@@ -7,7 +7,7 @@ using MyApp.Application.Queries.Room;
 
 namespace MyApp.Api.Controllers
 {
-    [Route("api/rooms")]
+    [Route("api/hotel/rooms")]
     [ApiController]
     public class RoomController(ISender sender, IMapper mapper) : ControllerBase
     {

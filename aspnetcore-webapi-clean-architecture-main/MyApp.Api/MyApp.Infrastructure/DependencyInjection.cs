@@ -26,7 +26,7 @@ namespace MyApp.Infrastructure
 
             services.AddScoped<IReservationRepository, ReservationRepository>();
 
-
+            services.AddScoped<IPasswordHasher, PasswordHasher>();
 
             services.AddScoped<IExternalVendorRepository, ExternalVendorRepository>();
         
