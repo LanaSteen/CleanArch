@@ -11,10 +11,10 @@ namespace MyApp.Core.Entities
         public int Id { get; set; }
         public string Email { get; set; }
         public string PasswordHash { get; set; }
-        public int? HotelId { get; set; } // Assuming HotelId is an int or nullable int
-        public HotelEntity Hotel { get; set; } // Navigation property to Hotel
-        public string UserId { get; set; } // Foreign key to UserEntity
-        public UserEntity User { get; set; } // Navigation property to UserEntity
+        public int? HotelId { get; set; } 
+        public HotelEntity Hotel { get; set; } 
+        public string UserId { get; set; } 
+        public UserEntity User { get; set; }
     }
 
 

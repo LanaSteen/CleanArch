@@ -13,7 +13,6 @@ namespace MyApp.Application.Commands.Hotel
     {
         public async Task<HotelEntity> Handle(UpdateHotelCommand request, CancellationToken cancellationToken)
         {
-            // Convert DTO to entity
             var hotelEntity = mapper.Map<HotelEntity>(request.HotelRequest);
             return await hotelRepository.UpdateHotelAsync(request.HotelId, hotelEntity);
         }

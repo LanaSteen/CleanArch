@@ -10,7 +10,7 @@ namespace MyApp.Core.Entities
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int Rating { get; set; }  // Rating between 1 and 5
+        public int Rating { get; set; }  // 1 -5 რეიტინგი
         public string Country { get; set; }
         public string City { get; set; }
         public string Address { get; set; }

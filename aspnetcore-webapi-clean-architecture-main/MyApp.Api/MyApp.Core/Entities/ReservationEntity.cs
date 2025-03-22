@@ -12,14 +12,13 @@ namespace MyApp.Core.Entities
         public DateTime CheckInDate { get; set; }
         public DateTime CheckOutDate { get; set; }
 
-        // Foreign Keys
         public int HotelId { get; set; }
         public int RoomId { get; set; }
 
 
         public HotelEntity Hotel { get; set; }
         public RoomEntity Room { get; set; }
-        public string GuestId { get; set; } // Change this to string to match UserEntity's Id
+        public string GuestId { get; set; } 
         public UserEntity Guest { get; set; }
     }
 

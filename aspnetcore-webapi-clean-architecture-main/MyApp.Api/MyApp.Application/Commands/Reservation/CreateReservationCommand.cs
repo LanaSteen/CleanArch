@@ -35,7 +35,6 @@ namespace MyApp.Application.Commands.Reservation
 
         public async Task<ReservationDto> Handle(CreateReservationCommand request, CancellationToken cancellationToken)
         {
-            // Updated GuestId to string
             var guest = await _guestRepository.GetByIdAsync(request.ReservationRequest.GuestId);
             if (guest == null)
             {

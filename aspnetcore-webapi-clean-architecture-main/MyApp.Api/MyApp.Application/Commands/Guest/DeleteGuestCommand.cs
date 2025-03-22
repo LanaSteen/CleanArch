@@ -20,7 +20,7 @@ namespace MyApp.Application.Commands.Guest
 
         public async Task<bool> Handle(DeleteGuestCommand request, CancellationToken cancellationToken)
         {
-            var guestEntity = await _guestRepository.GetByIdAsync(request.GuestId); // Expecting string Id
+            var guestEntity = await _guestRepository.GetByIdAsync(request.GuestId);
             if (guestEntity == null) return false;
 
             return await _guestRepository.DeleteAsync(guestEntity);

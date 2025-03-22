@@ -43,7 +43,6 @@ namespace MyApp.Api.Controllers
             return Ok(guestsDto);
         }
 
-        // Updated this line to use string instead of int for guestId
         [HttpGet("{guestId}")]
         public async Task<IActionResult> GetGuestByIdAsync([FromRoute] string guestId)
         {
@@ -55,7 +54,6 @@ namespace MyApp.Api.Controllers
             return Ok(result);
         }
 
-        // Updated this line to use string instead of int for guestId
         [HttpPut("{guestId}")]
         public async Task<IActionResult> UpdateGuestAsync([FromRoute] string guestId, [FromBody] UpdateGuestRequest guestRequest)
         {
@@ -68,7 +66,6 @@ namespace MyApp.Api.Controllers
             return result is null ? NotFound(new { message = $"Guest with ID {guestId} not found." }) : Ok(result);
         }
 
-        // Updated this line to use string instead of int for guestId
         [HttpDelete("{guestId}")]
         public async Task<IActionResult> DeleteGuestAsync([FromRoute] string guestId)
         {

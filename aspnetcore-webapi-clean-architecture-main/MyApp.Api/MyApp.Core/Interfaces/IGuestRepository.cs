@@ -10,7 +10,7 @@ namespace MyApp.Core.Interfaces
         Task<List<GuestEntity>> GetAllAsync();
         Task<GuestEntity> GetByIdAsync(string id);  // Change int → string
         Task<GuestEntity> AddAsync(GuestEntity entity);
-        Task<GuestEntity> UpdateAsync(GuestEntity entity);
+        Task<GuestEntity> UpdateAsync(string guestId, Dictionary<string, object> updates);
         Task<bool> DeleteAsync(GuestEntity entity);
     }
 }

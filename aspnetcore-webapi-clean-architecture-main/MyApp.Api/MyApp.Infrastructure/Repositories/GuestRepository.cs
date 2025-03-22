@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MyApp.Infrastructure.Data;
+using MyApp.Application.DTOs.Guest;
 
 namespace MyApp.Infrastructure.Repositories
 {
@@ -23,7 +24,7 @@ namespace MyApp.Infrastructure.Repositories
             return await _dbContext.Guests.ToListAsync();
         }
 
-        public async Task<GuestEntity> GetByIdAsync(string id)  // Change ID to string (IdentityUser uses string IDs)
+        public async Task<GuestEntity> GetByIdAsync(string id) 
         {
             return await _dbContext.Guests.FirstOrDefaultAsync(x => x.Id == id);
         }
@@ -31,29 +32,35 @@ namespace MyApp.Infrastructure.Repositories
         public async Task<GuestEntity> AddAsync(GuestEntity entity)
         {
             entity.PasswordHash = _passwordHasher.HashPassword(entity.PasswordHash ?? "");
-            entity.Role = "Guest";  // Role is set here since GuestEntity inherits UserEntity
+            entity.Role = "Guest";  
 
-            _dbContext.Guests.Add(entity);  // Directly add GuestEntity
+            await _dbContext.Users.AddAsync(entity); 
             await _dbContext.SaveChangesAsync();
 
             return entity;
         }
 
-        public async Task<GuestEntity> UpdateAsync(GuestEntity entity)
+        public async Task<GuestEntity> UpdateAsync(string guestId, Dictionary<string, object> updates)
         {
-            if (!string.IsNullOrEmpty(entity.PasswordHash))
+            var guestEntity = await _dbContext.Guests.FirstOrDefaultAsync(g => g.Id == guestId);
+            if (guestEntity == null) return null;
+
+            foreach (var update in updates)
             {
-                entity.PasswordHash = _passwordHasher.HashPassword(entity.PasswordHash);
+                var property = typeof(GuestEntity).GetProperty(update.Key);
+                if (property != null && update.Value != null)
+                {
+                    property.SetValue(guestEntity, Convert.ChangeType(update.Value, property.PropertyType));
+                }
             }
 
-            _dbContext.Guests.Update(entity);
             await _dbContext.SaveChangesAsync();
-            return entity;
+            return guestEntity;
         }
-
         public async Task<bool> DeleteAsync(GuestEntity entity)
         {
-            _dbContext.Guests.Remove(entity);
+            _dbContext.Users.Remove(entity);  
+            _dbContext.Guests.Remove(entity); 
             return await _dbContext.SaveChangesAsync() > 0;
         }
     }

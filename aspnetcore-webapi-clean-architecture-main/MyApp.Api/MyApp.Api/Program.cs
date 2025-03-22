@@ -3,10 +3,12 @@ using MyApp.Application.Validators;
 using FluentValidation;
 using MyApp.Application.Profiles;
 using MyApp.Infrastructure.Middleware;
+using Microsoft.AspNetCore.Identity;
+using MyApp.Core.Entities;
+using MyApp.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -21,14 +23,24 @@ builder.Services.AddAutoMapper(typeof(GuestProfile));
 builder.Services.AddAutoMapper(typeof(ReservationProfile));
 builder.Services.AddValidatorsFromAssemblyContaining<CreateHotelCommandValidator>();
 builder.Services.AddAppDI(builder.Configuration);
+builder.Services.AddIdentity<UserEntity, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = true;
+    options.Password.RequiredUniqueChars = 1;
+})
+.AddEntityFrameworkStores<AppDbContext>()
+.AddDefaultTokenProviders();  
 
+builder.Services.AddScoped<UserManager<UserEntity>>();
 var app = builder.Build();
 
 
  
 
-
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

@@ -57,7 +57,7 @@ namespace MyApp.Infrastructure.Repositories
             var hotel = await dbContext.Hotels
                 .Include(h => h.Rooms)
                 .Include(h => h.Reservations)
-                .Include(h => h.Manager)  // Include manager to remove it
+                .Include(h => h.Manager) 
                 .FirstOrDefaultAsync(x => x.Id == hotelId);
 
             if (hotel is null)
@@ -70,13 +70,12 @@ namespace MyApp.Infrastructure.Repositories
                 return (false, "Hotel cannot be deleted because there are active rooms or reservations.");
             }
 
-            // Delete the manager if associated with the hotel
             if (hotel.Manager != null)
             {
-                dbContext.Managers.Remove(hotel.Manager);  // Delete the manager
+                dbContext.Managers.Remove(hotel.Manager);  
             }
 
-            dbContext.Hotels.Remove(hotel);  // Delete the hotel
+            dbContext.Hotels.Remove(hotel);  
             await dbContext.SaveChangesAsync();
 
             return (true, "Hotel and its associated manager deleted successfully.");

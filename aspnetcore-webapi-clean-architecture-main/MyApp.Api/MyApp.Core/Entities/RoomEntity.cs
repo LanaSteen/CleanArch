@@ -17,7 +17,7 @@ namespace MyApp.Core.Entities
         public int HotelId { get; set; }
         public HotelEntity Hotel { get; set; }
 
-        // Navigation property for Reservations (M:M relationship)
+        //  (M:M relationship)
         public ICollection<ReservationEntity> Reservations { get; set; }
     }
 
