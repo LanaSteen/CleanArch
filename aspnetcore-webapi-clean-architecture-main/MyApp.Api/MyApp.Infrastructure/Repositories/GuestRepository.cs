@@ -1,7 +1,6 @@
 ﻿using MyApp.Core.Entities;
 using MyApp.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MyApp.Infrastructure.Data;
@@ -21,34 +20,20 @@ namespace MyApp.Infrastructure.Repositories
 
         public async Task<List<GuestEntity>> GetAllAsync()
         {
-            return await _dbContext.Guests
-                .Include(g => g.User)  
-                .ToListAsync();
+            return await _dbContext.Guests.ToListAsync();
         }
 
-        public async Task<GuestEntity> GetByIdAsync(int id)
+        public async Task<GuestEntity> GetByIdAsync(string id)  // Change ID to string (IdentityUser uses string IDs)
         {
-            return await _dbContext.Guests
-                .Include(g => g.User)  
-                .FirstOrDefaultAsync(x => x.Id == id);
+            return await _dbContext.Guests.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<GuestEntity> AddAsync(GuestEntity entity)
         {
             entity.PasswordHash = _passwordHasher.HashPassword(entity.PasswordHash ?? "");
+            entity.Role = "Guest";  // Role is set here since GuestEntity inherits UserEntity
 
-            var user = new UserEntity
-            {
-                Email = entity.Email,
-                PasswordHash = entity.PasswordHash,
-                Role = "Guest"
-            };
-
-            _dbContext.Users.Add(user);
-            await _dbContext.SaveChangesAsync();
-
-            entity.UserId = user.Id;
-            _dbContext.Guests.Add(entity);
+            _dbContext.Guests.Add(entity);  // Directly add GuestEntity
             await _dbContext.SaveChangesAsync();
 
             return entity;
@@ -58,7 +43,7 @@ namespace MyApp.Infrastructure.Repositories
         {
             if (!string.IsNullOrEmpty(entity.PasswordHash))
             {
-                entity.PasswordHash = _passwordHasher.HashPassword(entity.PasswordHash);  // Hash the password before update
+                entity.PasswordHash = _passwordHasher.HashPassword(entity.PasswordHash);
             }
 
             _dbContext.Guests.Update(entity);

@@ -1,43 +1,41 @@
 ﻿using AutoMapper;
 using MediatR;
-using MyApp.Application.Commands.Guest;
 using MyApp.Application.DTOs.Guest;
 using MyApp.Application.DTOs.Reservation;
 using MyApp.Core.Entities;
 using MyApp.Core.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MyApp.Application.Commands.Reservation
 {
     public record CreateReservationCommand(CreateReservationRequest ReservationRequest) : IRequest<ReservationDto>;
+
     public class CreateReservationCommandHandler : IRequestHandler<CreateReservationCommand, ReservationDto>
     {
         private readonly IReservationRepository _reservationRepository;
         private readonly IGuestRepository _guestRepository;
-        private readonly IHotelRepository _hotelRepository;  
-        private readonly IRoomRepository _roomRepository;   
+        private readonly IHotelRepository _hotelRepository;
+        private readonly IRoomRepository _roomRepository;
         private readonly IMapper _mapper;
 
         public CreateReservationCommandHandler(
             IReservationRepository reservationRepository,
             IGuestRepository guestRepository,
-            IHotelRepository hotelRepository,   
-            IRoomRepository roomRepository,   
+            IHotelRepository hotelRepository,
+            IRoomRepository roomRepository,
             IMapper mapper)
         {
             _reservationRepository = reservationRepository;
             _guestRepository = guestRepository;
-            _hotelRepository = hotelRepository;  
-            _roomRepository = roomRepository;   
+            _hotelRepository = hotelRepository;
+            _roomRepository = roomRepository;
             _mapper = mapper;
         }
 
         public async Task<ReservationDto> Handle(CreateReservationCommand request, CancellationToken cancellationToken)
         {
+            // Updated GuestId to string
             var guest = await _guestRepository.GetByIdAsync(request.ReservationRequest.GuestId);
             if (guest == null)
             {
@@ -67,5 +65,4 @@ namespace MyApp.Application.Commands.Reservation
             return _mapper.Map<ReservationDto>(createdReservation);
         }
     }
-
 }

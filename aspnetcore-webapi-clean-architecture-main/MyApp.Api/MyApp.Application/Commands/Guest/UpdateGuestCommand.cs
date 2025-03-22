@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MyApp.Application.Commands.Guest
 {
-    public record UpdateGuestCommand(int GuestId, UpdateGuestRequest GuestRequest) : IRequest<GuestDto>;
+    public record UpdateGuestCommand(string GuestId, UpdateGuestRequest GuestRequest) : IRequest<GuestDto>;
     public class UpdateGuestCommandHandler : IRequestHandler<UpdateGuestCommand, GuestDto>
     {
         private readonly IGuestRepository _guestRepository;
@@ -24,7 +24,7 @@ namespace MyApp.Application.Commands.Guest
 
         public async Task<GuestDto> Handle(UpdateGuestCommand request, CancellationToken cancellationToken)
         {
-            var guestEntity = await _guestRepository.GetByIdAsync(request.GuestId);
+            var guestEntity = await _guestRepository.GetByIdAsync(request.GuestId); // Expecting string Id
             if (guestEntity == null) return null;
 
             _mapper.Map(request.GuestRequest, guestEntity);

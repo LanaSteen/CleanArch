@@ -15,11 +15,12 @@ namespace MyApp.Core.Entities
         // Foreign Keys
         public int HotelId { get; set; }
         public int RoomId { get; set; }
-        public int GuestId { get; set; }
+
 
         public HotelEntity Hotel { get; set; }
         public RoomEntity Room { get; set; }
-        public GuestEntity Guest { get; set; }
+        public string GuestId { get; set; } // Change this to string to match UserEntity's Id
+        public UserEntity Guest { get; set; }
     }
 
 }

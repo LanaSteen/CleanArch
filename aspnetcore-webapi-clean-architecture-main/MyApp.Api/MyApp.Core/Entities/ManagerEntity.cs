@@ -8,21 +8,13 @@ namespace MyApp.Core.Entities
 {
     public class ManagerEntity
     {
-        public int Id { get; set; }  // Primary Key (Identity)
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string PersonalNumber { get; set; } 
+        public int Id { get; set; }
         public string Email { get; set; }
-        public string PasswordHash { get; set; } = string.Empty;
-        public string PhoneNumber { get; set; }
-
-        // Navigation property for the associated Hotel (1:1 relationship)
-        public int HotelId { get; set; }
-        public HotelEntity Hotel { get; set; }
-
-
-        public int UserId { get; set; }
-        public UserEntity User { get; set; }
+        public string PasswordHash { get; set; }
+        public int? HotelId { get; set; } // Assuming HotelId is an int or nullable int
+        public HotelEntity Hotel { get; set; } // Navigation property to Hotel
+        public string UserId { get; set; } // Foreign key to UserEntity
+        public UserEntity User { get; set; } // Navigation property to UserEntity
     }
 
 

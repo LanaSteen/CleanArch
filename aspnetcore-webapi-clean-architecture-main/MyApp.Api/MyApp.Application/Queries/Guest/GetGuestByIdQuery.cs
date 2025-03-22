@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace MyApp.Application.Queries.Guest
 {
-    public record GetGuestByIdQuery(int GuestId) : IRequest<GuestDto>;
-
+    public record GetGuestByIdQuery(string GuestId) : IRequest<GuestDto>;
     public class GetGuestByIdQueryHandler : IRequestHandler<GetGuestByIdQuery, GuestDto>
     {
         private readonly IGuestRepository _guestRepository;
