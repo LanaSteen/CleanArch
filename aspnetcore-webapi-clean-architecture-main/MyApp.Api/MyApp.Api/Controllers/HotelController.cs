@@ -9,11 +9,13 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using MyApp.Application.DTOs.Hotel;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HotelManagementSystem.Controllers
 {
     [Route("api/hotel/hotels")]
     [ApiController]
+    [Authorize]
     public class HotelController : ControllerBase
     {
         private readonly ISender _sender;

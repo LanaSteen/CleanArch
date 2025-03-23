@@ -11,9 +11,10 @@ namespace MyApp.Application.Profiles
         public GuestProfile()
         {
             CreateMap<GuestEntity, GuestDto>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
+                     .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
             CreateMap<CreateGuestRequest, GuestEntity>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore());  
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password));
         }
     }
 }

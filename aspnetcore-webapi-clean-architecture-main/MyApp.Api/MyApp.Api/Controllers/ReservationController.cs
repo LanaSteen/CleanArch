@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyApp.Application.Commands.Reservation;
 using MyApp.Application.DTOs.Reservation;
@@ -12,6 +13,8 @@ namespace MyApp.Api.Controllers
 {
     [Route("api/hotel/reservations")]
     [ApiController]
+    [Authorize(Policy = "GuestOnly")]
+
     public class ReservationController : ControllerBase
     {
         private readonly ISender _sender;

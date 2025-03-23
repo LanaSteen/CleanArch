@@ -47,6 +47,7 @@ namespace MyApp.Infrastructure.Data
 
             modelBuilder.Entity<GuestEntity>()
                 .HasBaseType<UserEntity>();
+
         }
     }
 }

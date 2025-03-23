@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using MyApp.Application.Commands.Guest;
 using MyApp.Application.DTOs.Guest;
-using MyApp.Application.Queries;
 using MyApp.Application.Queries.Guest;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -26,13 +25,21 @@ namespace MyApp.Api.Controllers
         [HttpPost("")]
         public async Task<IActionResult> CreateGuestAsync([FromBody] CreateGuestRequest guestRequest)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
-            }
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
 
-            var result = await _sender.Send(new CreateGuestCommand(guestRequest));
-            return Ok(result);
+                var result = await _sender.Send(new CreateGuestCommand(guestRequest));
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
         }
 
         [HttpGet]
