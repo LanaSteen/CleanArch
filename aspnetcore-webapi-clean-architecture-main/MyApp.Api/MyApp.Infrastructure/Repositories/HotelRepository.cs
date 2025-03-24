@@ -17,12 +17,12 @@ namespace MyApp.Infrastructure.Repositories
             return await dbContext.Hotels.ToListAsync();
         }
 
-        public async Task<HotelEntity> GetHotelByIdAsync(int id)
+        public async Task<HotelEntity?> GetHotelByIdAsync(int id)
         {
             return await dbContext.Hotels
-                .Include(h => h.Manager)        
-                .Include(h => h.Rooms)       
-                .Include(h => h.Reservations)  
+                .Include(h => h.Manager)
+                .Include(h => h.Rooms)
+                .Include(h => h.Reservations)
                 .FirstOrDefaultAsync(h => h.Id == id);
         }
 
@@ -39,11 +39,11 @@ namespace MyApp.Infrastructure.Repositories
 
             if (hotel is not null)
             {
-                hotel.Name = entity.Name;
-                hotel.Rating = entity.Rating;
-                hotel.Country = entity.Country;
-                hotel.City = entity.City;
-                hotel.Address = entity.Address;
+                hotel.Name = entity.Name ?? hotel.Name;
+                hotel.Rating = entity.Rating >=0 ? entity.Rating : hotel.Rating;
+                hotel.Country = entity.Country ?? hotel.Country;
+                hotel.City = entity.City ?? hotel.City;
+                hotel.Address = entity.Address ?? hotel.Address;
 
                 await dbContext.SaveChangesAsync();
                 return hotel;

@@ -29,7 +29,7 @@ namespace MyApp.Infrastructure
             services.AddScoped<IPasswordHasher, PasswordHasher>();
 
             services.AddScoped<IExternalVendorRepository, ExternalVendorRepository>();
-
+   
 
             services.AddHttpClient<IJokeHttpClientService, JokeHttpClientService>(option =>
             {

@@ -12,12 +12,17 @@ namespace MyApp.Application.Profiles
             //CreateMap<CreateHotelRequest, HotelEntity>();
             //CreateMap<HotelEntity, HotelDto>();
             //CreateMap<HotelEntity, CreateHotelRequest>().ReverseMap();
-            CreateMap<HotelEntity, HotelDto>();
+            //CreateMap<HotelEntity, HotelDto>();
             CreateMap<CreateHotelRequest, HotelEntity>();
-            CreateMap<UpdateHotelRequest, HotelEntity>();
+            //CreateMap<UpdateHotelRequest, HotelEntity>();
 
+            // CreateMap<HotelEntity, HotelDto>()
+            //.ForMember(dest => dest.ManagerId, opt => opt.MapFrom(src => src.ManagerId));
             CreateMap<HotelEntity, HotelDto>()
-           .ForMember(dest => dest.ManagerId, opt => opt.MapFrom(src => src.ManagerId));
+                    .ForMember(dest => dest.ManagerId, opt =>
+                        opt.MapFrom(src => src.Manager != null ? src.Manager.Id : (int?)null));
+            CreateMap<UpdateHotelRequest, HotelEntity>()
+                .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
         }
     }
 }

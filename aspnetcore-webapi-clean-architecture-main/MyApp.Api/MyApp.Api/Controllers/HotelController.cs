@@ -15,7 +15,7 @@ namespace HotelManagementSystem.Controllers
 {
     [Route("api/hotel/hotels")]
     [ApiController]
-    [Authorize(Policy = "AdminOnly")]
+ 
     public class HotelController : ControllerBase
     {
         private readonly ISender _sender;
@@ -30,6 +30,7 @@ namespace HotelManagementSystem.Controllers
         }
 
         [HttpPost("")]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> CreateHotelAsync([FromBody] CreateHotelRequest hotelRequest)
         {
             if (!ModelState.IsValid)
@@ -64,6 +65,7 @@ namespace HotelManagementSystem.Controllers
         }
 
         [HttpPut("{hotelId}")]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> UpdateHotelAsync([FromRoute] int hotelId, [FromBody] UpdateHotelRequest updateHotelRequest)
         {
             if (!ModelState.IsValid)
@@ -78,6 +80,7 @@ namespace HotelManagementSystem.Controllers
             return Ok(result);
         }
         [HttpDelete("{hotelId}")]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> DeleteHotelAsync([FromRoute] int hotelId)
         {
             var message = await _sender.Send(new DeleteHotelCommand(hotelId));
