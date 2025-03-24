@@ -15,7 +15,7 @@ namespace HotelManagementSystem.Controllers
 {
     [Route("api/hotel/hotels")]
     [ApiController]
-    [Authorize]
+    [Authorize(Policy = "AdminOnly")]
     public class HotelController : ControllerBase
     {
         private readonly ISender _sender;

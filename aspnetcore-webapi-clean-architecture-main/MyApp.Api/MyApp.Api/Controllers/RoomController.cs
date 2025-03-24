@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyApp.Application.Commands.Room;
 using MyApp.Application.DTOs.Room;
@@ -9,6 +10,7 @@ namespace MyApp.Api.Controllers
 {
     [Route("api/hotel/rooms")]
     [ApiController]
+    [Authorize(Roles = "Admin,Manager")]
     public class RoomController(ISender sender, IMapper mapper) : ControllerBase
     {
         [HttpPost("")]

@@ -91,10 +91,8 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-});
-builder.Services.AddAuthorization(options =>
-{
     options.AddPolicy("GuestOnly", policy => policy.RequireRole("Guest"));
+    options.AddPolicy("ManagerOnly", policy => policy.RequireRole("Manager"));
 });
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -105,6 +103,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseStatusCodePages(async context =>
+{
+    if (context.HttpContext.Response.StatusCode == StatusCodes.Status401Unauthorized ||
+        context.HttpContext.Response.StatusCode == StatusCodes.Status403Forbidden)
+    {
+        context.HttpContext.Response.ContentType = "application/json";
+        await context.HttpContext.Response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(new
+        {
+            message = "Not Authorized or No Permissions"
+        }));
+    }
+});
 
 app.UseAuthentication();
 app.UseAuthorization();

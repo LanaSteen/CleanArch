@@ -13,8 +13,8 @@ namespace MyApp.Api.Controllers
 {
     [Route("api/hotel/reservations")]
     [ApiController]
-    [Authorize(Policy = "GuestOnly")]
-
+    //[Authorize(Policy = "GuestOnly")]
+    [Authorize(Roles = "Admin,Manager,Guest")]
     public class ReservationController : ControllerBase
     {
         private readonly ISender _sender;
