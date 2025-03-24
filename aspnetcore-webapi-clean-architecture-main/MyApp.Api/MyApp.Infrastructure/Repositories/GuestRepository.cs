@@ -63,5 +63,10 @@ namespace MyApp.Infrastructure.Repositories
             _dbContext.Guests.Remove(entity); 
             return await _dbContext.SaveChangesAsync() > 0;
         }
+
+        public async Task<bool> EmailExistsAsync(string email)
+        {
+            return await _dbContext.Guests.AnyAsync(g => g.Email == email);
+        }
     }
 }

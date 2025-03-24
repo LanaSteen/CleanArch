@@ -31,6 +31,13 @@ namespace MyApp.Application.Commands.Manager
                 throw new NotFoundException("Manager not found.");
             }
 
+            if (!string.IsNullOrEmpty(request.ManagerRequest.Email) &&
+                request.ManagerRequest.Email != managerEntity.Email &&
+                await _managerRepository.EmailExistsAsync(request.ManagerRequest.Email))
+            {
+                throw new ApplicationException("Email is already in use.");
+            }
+
             _mapper.Map(request.ManagerRequest, managerEntity);
 
             var updatedManager = await _managerRepository.UpdateAsync(managerEntity);

@@ -30,6 +30,14 @@ namespace MyApp.Application.Commands.Manager
                 throw new InvalidOperationException("This hotel already has a manager.");
             }
 
+            if (await _managerRepository.EmailExistsAsync(request.ManagerRequest.Email))
+            {
+                throw new ApplicationException("Email is already in use.");
+            }
+
+  
+
+
             var managerEntity = _mapper.Map<ManagerEntity>(request.ManagerRequest);
 
             var createdManager = await _managerRepository.AddAsync(managerEntity, request.ManagerRequest.Password);

@@ -36,6 +36,10 @@ namespace MyApp.Api.Controllers
                 var result = await _sender.Send(new CreateGuestCommand(guestRequest));
                 return Ok(result);
             }
+            catch (ApplicationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
@@ -70,13 +74,25 @@ namespace MyApp.Api.Controllers
         [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> UpdateGuestAsync([FromRoute] string guestId, [FromBody] UpdateGuestRequest guestRequest)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
-            }
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
 
-            var result = await _sender.Send(new UpdateGuestCommand(guestId, guestRequest));
-            return result is null ? NotFound(new { message = $"Guest with ID {guestId} not found." }) : Ok(result);
+                var result = await _sender.Send(new UpdateGuestCommand(guestId, guestRequest));
+                return result is null ? NotFound(new { message = $"Guest with ID {guestId} not found." }) : Ok(result);
+            }
+            catch (ApplicationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
         }
 
         [HttpDelete("{guestId}")]

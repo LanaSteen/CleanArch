@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyApp.Application.Commands.Manager;
 using MyApp.Application.DTOs.Manager;
+using MyApp.Application.Exceptions;
 using MyApp.Application.Queries.Manager;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -23,7 +24,7 @@ namespace MyApp.Api.Controllers
             _mapper = mapper;
         }
 
-     
+
         [HttpPost]
         [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> CreateManagerAsync([FromBody] CreateManagerRequest managerRequest)
@@ -35,7 +36,16 @@ namespace MyApp.Api.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ApplicationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
             }
         }
 
@@ -62,6 +72,7 @@ namespace MyApp.Api.Controllers
             return Ok(managerDto);  
         }
 
+
         [HttpPut("{managerId}")]
         [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> UpdateManagerAsync([FromRoute] int managerId, [FromBody] UpdateManagerRequest managerRequest)
@@ -69,11 +80,20 @@ namespace MyApp.Api.Controllers
             try
             {
                 var result = await _sender.Send(new UpdateManagerCommand(managerId, managerRequest));
-                return Ok(result); 
+                return Ok(result);
             }
-            catch (InvalidOperationException ex)
+            catch (NotFoundException ex)
             {
-                return BadRequest(ex.Message);  
+                return NotFound(new { message = ex.Message });
+            }
+            catch (ApplicationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
             }
         }
 

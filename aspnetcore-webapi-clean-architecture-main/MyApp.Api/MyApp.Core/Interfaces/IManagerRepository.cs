@@ -14,6 +14,7 @@ namespace MyApp.Core.Interfaces
         Task<ManagerEntity> UpdateAsync(ManagerEntity manager);
         Task<bool> DeleteAsync(ManagerEntity manager);
         Task<UserEntity> GetUserByManagerIdAsync(int managerId); 
-        Task UpdateUserAsync(UserEntity user); 
+        Task UpdateUserAsync(UserEntity user);
+        Task<bool> EmailExistsAsync(string email);
     }
 }

@@ -13,6 +13,8 @@ namespace MyApp.Infrastructure.Services
         public async Task<JokeModel> GetData()
         {
             return await httpClient.GetFromJsonAsync<JokeModel>("random_joke");
+            //return await httpClient.GetFromJsonAsync<JokeModel>("/jokes/programming/random");
+            //https://official-joke-api.appspot.com/jokes/programming/random
         }
     }
 }

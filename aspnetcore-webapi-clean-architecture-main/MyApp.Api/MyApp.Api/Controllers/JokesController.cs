@@ -9,15 +9,9 @@ namespace MyApp.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ExternalVendorController(ISender sender) : ControllerBase
+    public class GetSomeFunController(ISender sender) : ControllerBase
     {
-        [HttpGet("")]
-        public async Task<IActionResult> GetCoindeskData()
-        {
-            var result = await sender.Send(new GetCoinkdeskDataQuery());
-            return Ok(result);
-        }
-
+    
         [HttpGet("joke")]
         public async Task<IActionResult> GetJoke()
         {

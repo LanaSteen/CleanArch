@@ -110,5 +110,10 @@ namespace MyApp.Infrastructure.Repositories
         {
             return new Random().Next(1, int.MaxValue); 
         }
+
+        public async Task<bool> EmailExistsAsync(string email)
+        {
+            return await _dbContext.Managers.AnyAsync(g => g.Email == email);
+        }
     }
 }

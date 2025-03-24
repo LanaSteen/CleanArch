@@ -23,6 +23,11 @@ namespace MyApp.Application.Commands.Guest
 
         public async Task<GuestDto> Handle(CreateGuestCommand request, CancellationToken cancellationToken)
         {
+            if (await _guestRepository.EmailExistsAsync(request.GuestRequest.Email))
+            {
+                throw new ApplicationException("Email is already in use.");
+            }
+
             var guestEntity = _mapper.Map<GuestEntity>(request.GuestRequest);
 
             var createdGuest = await _guestRepository.AddAsync(guestEntity);

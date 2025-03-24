@@ -22,19 +22,16 @@ namespace MyApp.Infrastructure.Middleware
         {
             try
             {
-                // Process the request further down the pipeline
                 await _next(httpContext);
             }
             catch (NotFoundException ex)
             {
-                // Log the exception and return a 404 response
                 _logger.LogError(ex, ex.Message);
                 httpContext.Response.StatusCode = StatusCodes.Status404NotFound;
                 await httpContext.Response.WriteAsync($"Error: {ex.Message}");
             }
             catch (Exception ex)
             {
-                // For any unhandled exceptions, log and return a 500 response
                 _logger.LogError(ex, "An unexpected error occurred.");
                 httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 await httpContext.Response.WriteAsync("An unexpected error occurred.");
