@@ -51,10 +51,13 @@ namespace MyApp.Infrastructure.Repositories
                 throw new ArgumentException("Invalid HotelId for Manager.");
             }
 
-            var existingManager = await _dbContext.Managers
-                .FirstOrDefaultAsync(m => m.HotelId == manager.HotelId);
+            var hotel = await _dbContext.Hotels.FindAsync(manager.HotelId);
+            if (hotel == null)
+            {
+                throw new ArgumentException("Hotel not found.");
+            }
 
-            if (existingManager != null)
+            if (hotel.ManagerId != 0)
             {
                 throw new InvalidOperationException("This hotel already has a manager.");
             }
@@ -67,7 +70,7 @@ namespace MyApp.Infrastructure.Repositories
             };
 
             _dbContext.Users.Add(user);
-            await _dbContext.SaveChangesAsync(); 
+            await _dbContext.SaveChangesAsync();
 
             manager.UserId = user.Id;
             manager.PasswordHash = _passwordHasher.HashPassword(password);
@@ -75,9 +78,11 @@ namespace MyApp.Infrastructure.Repositories
             _dbContext.Managers.Add(manager);
             await _dbContext.SaveChangesAsync();
 
+            hotel.ManagerId = manager.Id;
+            await _dbContext.SaveChangesAsync();
+
             return manager;
         }
-
         public async Task<ManagerEntity> UpdateAsync(ManagerEntity manager)
         {
             _dbContext.Managers.Update(manager);
@@ -87,10 +92,18 @@ namespace MyApp.Infrastructure.Repositories
 
         public async Task<bool> DeleteAsync(ManagerEntity manager)
         {
+            if (manager.HotelId.HasValue)
+            {
+                var hotel = await _dbContext.Hotels.FindAsync(manager.HotelId.Value);
+                if (hotel != null)
+                {
+                    hotel.ManagerId = -1;
+                }
+            }
+
             _dbContext.Managers.Remove(manager);
             return await _dbContext.SaveChangesAsync() > 0;
         }
-
         public async Task<UserEntity> GetUserByManagerIdAsync(int managerId)
         {
             var manager = await _dbContext.Managers

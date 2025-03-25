@@ -6,15 +6,20 @@ using MyApp.Application.DTOs.Hotel;
 
 namespace MyApp.Application.Commands.Hotel
 {
-    public record UpdateHotelCommand(int HotelId, UpdateHotelRequest HotelRequest) : IRequest<HotelEntity>;
+    public record UpdateHotelCommand(int HotelId, HotelEntity Hotel) : IRequest<HotelEntity>;
 
-    public class UpdateHotelCommandHandler(IHotelRepository hotelRepository, IMapper mapper)
-        : IRequestHandler<UpdateHotelCommand, HotelEntity>
+    public class UpdateHotelCommandHandler : IRequestHandler<UpdateHotelCommand, HotelEntity>
     {
+        private readonly IHotelRepository _hotelRepository;
+
+        public UpdateHotelCommandHandler(IHotelRepository hotelRepository)
+        {
+            _hotelRepository = hotelRepository;
+        }
+
         public async Task<HotelEntity> Handle(UpdateHotelCommand request, CancellationToken cancellationToken)
         {
-            var hotelEntity = mapper.Map<HotelEntity>(request.HotelRequest);
-            return await hotelRepository.UpdateHotelAsync(request.HotelId, hotelEntity);
+            return await _hotelRepository.UpdateHotelAsync(request.HotelId, request.Hotel);
         }
     }
 }

@@ -30,7 +30,7 @@ namespace HotelManagementSystem.Controllers
         }
 
         [HttpPost("")]
-        [Authorize(Policy = "AdminOnly")]
+        //[Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> CreateHotelAsync([FromBody] CreateHotelRequest hotelRequest)
         {
             if (!ModelState.IsValid)
@@ -65,22 +65,33 @@ namespace HotelManagementSystem.Controllers
         }
 
         [HttpPut("{hotelId}")]
-        [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> UpdateHotelAsync([FromRoute] int hotelId, [FromBody] UpdateHotelRequest updateHotelRequest)
+        //[Authorize(Policy = "AdminOnly")]
+        public async Task<IActionResult> UpdateHotelAsync(
+            [FromRoute] int hotelId,
+            [FromBody] UpdateHotelRequest updateHotelRequest)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var updatedHotelEntity = _mapper.Map<HotelEntity>(updateHotelRequest);
+            var existingHotelDto = await _sender.Send(new GetHotelByIdQuery(hotelId));
+            if (existingHotelDto == null)
+            {
+                return NotFound();
+            }
 
-            var result = await _sender.Send(new UpdateHotelCommand(hotelId, updateHotelRequest));
+            var existingHotelEntity = _mapper.Map<HotelEntity>(existingHotelDto);
 
-            return Ok(result);
+            _mapper.Map(updateHotelRequest, existingHotelEntity);
+
+            var updatedHotelEntity = await _sender.Send(new UpdateHotelCommand(hotelId, existingHotelEntity));
+
+            return Ok(_mapper.Map<HotelDto>(updatedHotelEntity));
         }
+
         [HttpDelete("{hotelId}")]
-        [Authorize(Policy = "AdminOnly")]
+        //[Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> DeleteHotelAsync([FromRoute] int hotelId)
         {
             var message = await _sender.Send(new DeleteHotelCommand(hotelId));

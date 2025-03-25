@@ -21,14 +21,22 @@ namespace MyApp.Application.Commands.Hotel
 
         public async Task<HotelEntity> Handle(CreateHotelCommand request, CancellationToken cancellationToken)
         {
-            ValidationResult validationResult = await _validator.ValidateAsync(request, cancellationToken);
-
-            if (!validationResult.IsValid)
+            try
             {
-                throw new ValidationException(validationResult.Errors);
-            }
+                ValidationResult validationResult = await _validator.ValidateAsync(request, cancellationToken);
+                if (!validationResult.IsValid)
+                {
+                    throw new ValidationException(validationResult.Errors);
+                }
 
-            return await _hotelRepository.AddHotelAsync(request.Hotel);
+                var hotel = await _hotelRepository.AddHotelAsync(request.Hotel);
+                return hotel;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"CreateHotelCommand Error: {ex}");
+                throw; 
+            }
         }
     }
 }

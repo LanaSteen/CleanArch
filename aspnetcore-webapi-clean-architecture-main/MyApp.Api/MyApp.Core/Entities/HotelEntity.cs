@@ -1,28 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MyApp.Core.Entities;
 
-namespace MyApp.Core.Entities
+public class HotelEntity
 {
-    public class HotelEntity
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public int Rating { get; set; }  // 1 -5 რეიტინგი
-        public string Country { get; set; }
-        public string City { get; set; }
-        public string Address { get; set; }
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public int Rating { get; set; }  // 1 -5 რეიტინგი
+    public string Country { get; set; }
+    public string City { get; set; }
+    public string Address { get; set; }
 
-        // Navigation property for Manager (1:1 relationship)
-        public int ManagerId { get; set; }
-        public ManagerEntity Manager { get; set; }
+    public int ManagerId { get; set; }
+    public ManagerEntity Manager { get; set; }
 
-        // Navigation property for Rooms (1:M relationship)
-        public ICollection<RoomEntity> Rooms { get; set; }
+    // Navigation property for Rooms (1:M relationship)
+    public ICollection<RoomEntity> Rooms { get; set; }
 
-        // Navigation property for Reservations (M:M relationship)
-        public ICollection<ReservationEntity> Reservations { get; set; }
-    }
+    // Navigation property for Reservations (M:M relationship)
+    public ICollection<ReservationEntity> Reservations { get; set; }
 }

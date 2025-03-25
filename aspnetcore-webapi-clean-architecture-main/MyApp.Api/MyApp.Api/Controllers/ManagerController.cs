@@ -26,7 +26,7 @@ namespace MyApp.Api.Controllers
 
 
         [HttpPost]
-        [Authorize(Policy = "AdminOnly")]
+        //[Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> CreateManagerAsync([FromBody] CreateManagerRequest managerRequest)
         {
             try
@@ -50,7 +50,7 @@ namespace MyApp.Api.Controllers
         }
 
         [HttpGet("")]
-        [Authorize(Policy = "AdminOnly")]
+        //[Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> GetAllManagersAsync()
         {
             var managers = await _sender.Send(new GetAllManagersQuery());
@@ -59,7 +59,7 @@ namespace MyApp.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Policy = "AdminOnly")]
+        //[Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> GetManagerByIdAsync([FromRoute] int id)
         {
             var manager = await _sender.Send(new GetManagerByIdQuery(id));
@@ -74,7 +74,7 @@ namespace MyApp.Api.Controllers
 
 
         [HttpPut("{managerId}")]
-        [Authorize(Roles = "Admin,Manager")]
+        //[Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> UpdateManagerAsync([FromRoute] int managerId, [FromBody] UpdateManagerRequest managerRequest)
         {
             try
@@ -98,7 +98,7 @@ namespace MyApp.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Policy = "AdminOnly")]
+        //[Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> DeleteManagerAsync([FromRoute] int id)
         {
             var result = await _sender.Send(new DeleteManagerCommand(id));

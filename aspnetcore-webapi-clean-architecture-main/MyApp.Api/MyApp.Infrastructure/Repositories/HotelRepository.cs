@@ -28,28 +28,45 @@ namespace MyApp.Infrastructure.Repositories
 
         public async Task<HotelEntity> AddHotelAsync(HotelEntity entity)
         {
-            dbContext.Hotels.Add(entity);
-            await dbContext.SaveChangesAsync();
-            return entity;
+            try
+            {
+                dbContext.Hotels.Add(entity);
+                await dbContext.SaveChangesAsync();
+                return entity;
+            }
+            catch (Exception ex)
+            {
+       
+                Console.WriteLine($"Error adding hotel: {ex.Message}");
+                throw; 
+            }
         }
-
         public async Task<HotelEntity> UpdateHotelAsync(int hotelId, HotelEntity entity)
         {
             var hotel = await dbContext.Hotels.FirstOrDefaultAsync(x => x.Id == hotelId);
 
-            if (hotel is not null)
+            if (hotel != null)
             {
-                hotel.Name = entity.Name ?? hotel.Name;
-                hotel.Rating = entity.Rating >=0 ? entity.Rating : hotel.Rating;
-                hotel.Country = entity.Country ?? hotel.Country;
-                hotel.City = entity.City ?? hotel.City;
-                hotel.Address = entity.Address ?? hotel.Address;
+                if (!string.IsNullOrEmpty(entity.Name))
+                    hotel.Name = entity.Name;
+
+                if (entity.Rating > 0)
+                    hotel.Rating = entity.Rating;
+
+                if (!string.IsNullOrEmpty(entity.Country))
+                    hotel.Country = entity.Country;
+
+                if (!string.IsNullOrEmpty(entity.City))
+                    hotel.City = entity.City;
+
+                if (!string.IsNullOrEmpty(entity.Address))
+                    hotel.Address = entity.Address;
 
                 await dbContext.SaveChangesAsync();
                 return hotel;
             }
 
-            return entity;
+            return null;
         }
 
         public async Task<(bool IsSuccess, string Message)> DeleteHotelAsync(int hotelId)
@@ -57,7 +74,7 @@ namespace MyApp.Infrastructure.Repositories
             var hotel = await dbContext.Hotels
                 .Include(h => h.Rooms)
                 .Include(h => h.Reservations)
-                .Include(h => h.Manager) 
+                .Include(h => h.Manager)
                 .FirstOrDefaultAsync(x => x.Id == hotelId);
 
             if (hotel is null)
@@ -72,10 +89,16 @@ namespace MyApp.Infrastructure.Repositories
 
             if (hotel.Manager != null)
             {
-                dbContext.Managers.Remove(hotel.Manager);  
+                // First remove the manager reference from the hotel
+                hotel.ManagerId = -1;
+                await dbContext.SaveChangesAsync();
+
+                // Then delete the manager
+                dbContext.Managers.Remove(hotel.Manager);
+                await dbContext.SaveChangesAsync();
             }
 
-            dbContext.Hotels.Remove(hotel);  
+            dbContext.Hotels.Remove(hotel);
             await dbContext.SaveChangesAsync();
 
             return (true, "Hotel and its associated manager deleted successfully.");
