@@ -1,40 +1,49 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using MyApp.Application.Exceptions;
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
 
-namespace MyApp.Infrastructure.Middleware
+public class ExceptionHandlingMiddleware
 {
-    public class ExceptionHandlingMiddleware
+    private readonly RequestDelegate _next;
+    private readonly ILogger<ExceptionHandlingMiddleware> _logger;
+
+    public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
     {
-        private readonly RequestDelegate _next;
-        private readonly ILogger<ExceptionHandlingMiddleware> _logger;
+        _next = next;
+        _logger = logger;
+    }
 
-        public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
+    public async Task InvokeAsync(HttpContext httpContext)
+    {
+        try
         {
-            _next = next;
-            _logger = logger;
+            await _next(httpContext);
         }
-
-        public async Task InvokeAsync(HttpContext httpContext)
+        catch (ValidationException validationException)
         {
-            try
+            _logger.LogError($"Validation failed: {validationException.Message}");
+            httpContext.Response.StatusCode = StatusCodes.Status400BadRequest; // 400 Bad Request
+            await httpContext.Response.WriteAsync($"Validation failed: {validationException.Message}");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Something went wrong: {ex}");
+
+        
+            if (ex is ArgumentException)
             {
-                await _next(httpContext);
+                httpContext.Response.StatusCode = StatusCodes.Status400BadRequest; // 400 Bad Request
+                await httpContext.Response.WriteAsync($"Bad Request: {ex.Message}");
             }
-            catch (NotFoundException ex)
+            else if (ex is KeyNotFoundException)
             {
-                _logger.LogError(ex, ex.Message);
-                httpContext.Response.StatusCode = StatusCodes.Status404NotFound;
-                await httpContext.Response.WriteAsync($"Error: {ex.Message}");
+                httpContext.Response.StatusCode = StatusCodes.Status404NotFound; // 404 Not Found
+                await httpContext.Response.WriteAsync($"Not Found: {ex.Message}");
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError(ex, "An unexpected error occurred.");
-                httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                await httpContext.Response.WriteAsync("An unexpected error occurred.");
+                httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError; // 500 Internal Server Error
+                await httpContext.Response.WriteAsync($"Internal Server Error: {ex.Message}");
             }
         }
     }

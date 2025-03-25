@@ -27,8 +27,9 @@ namespace MyApp.Application.Profiles
             CreateMap<UpdateHotelRequest, HotelEntity>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
             CreateMap<UpdateHotelRequest, HotelEntity>()
-             .ForMember(dest => dest.ManagerId, opt => opt.Ignore()); // არ შეიცვლება ავტომატურად
-
+             .ForMember(dest => dest.ManagerId, opt => opt.Ignore());
+            CreateMap<HotelDto, HotelEntity>()
+         .ForMember(dest => dest.ManagerId, opt => opt.Condition(src => src.ManagerId.HasValue)); 
 
         }
     }

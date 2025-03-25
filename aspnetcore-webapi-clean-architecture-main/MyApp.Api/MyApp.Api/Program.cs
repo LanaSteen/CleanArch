@@ -2,7 +2,6 @@
 using MyApp.Application.Validators;
 using FluentValidation;
 using MyApp.Application.Profiles;
-using MyApp.Infrastructure.Middleware;
 using Microsoft.AspNetCore.Identity;
 using MyApp.Core.Entities;
 using MyApp.Infrastructure.Data;
@@ -12,6 +11,7 @@ using System.Text;
 using Microsoft.OpenApi.Models;
 using MyApp.Core.Interfaces;
 using MyApp.Infrastructure.Repositories;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +21,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "MyApp API", Version = "v1" });
 
-    // JWT ავტორიზაციის დამატება Swagger-ში
+    // JWT
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
@@ -52,6 +52,7 @@ builder.Services.AddAutoMapper(typeof(RoomProfile));
 builder.Services.AddAutoMapper(typeof(ManagerProfile));
 builder.Services.AddAutoMapper(typeof(GuestProfile));
 builder.Services.AddAutoMapper(typeof(ReservationProfile));
+builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateHotelCommandValidator>();
 builder.Services.AddAppDI(builder.Configuration);
 
@@ -96,6 +97,7 @@ builder.Services.AddAuthorization(options =>
 });
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddValidatorsFromAssemblyContaining<UpdateHotelCommandValidator>();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -121,7 +123,15 @@ app.UseAuthorization();
 
 app.UseHttpsRedirection();
 
-app.UseMiddleware<ExceptionHandlingMiddleware>();
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.UseMiddleware<ExceptionHandlingMiddleware>();
+}
+
 app.MapControllers();
 
 app.Run();
