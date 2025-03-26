@@ -12,6 +12,7 @@ using Microsoft.OpenApi.Models;
 using MyApp.Core.Interfaces;
 using MyApp.Infrastructure.Repositories;
 using FluentValidation.AspNetCore;
+using MyApp.Api.ServicsEmail;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,7 +56,7 @@ builder.Services.AddAutoMapper(typeof(ReservationProfile));
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateHotelCommandValidator>();
 builder.Services.AddAppDI(builder.Configuration);
-
+builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddIdentity<UserEntity, IdentityRole>(options =>
 {
     options.Password.RequireDigit = true;
