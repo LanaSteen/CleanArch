@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyApp.Application.Commands.Guest;
 using MyApp.Application.DTOs.Guest;
+using MyApp.Application.Exceptions;
 using MyApp.Application.Queries.Guest;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -95,11 +96,27 @@ namespace MyApp.Api.Controllers
         }
 
         [HttpDelete("{guestId}")]
-        //[Authorize(Roles = "Admin,Manager")]
-        public async Task<IActionResult> DeleteGuestAsync([FromRoute] string guestId)
+        //[Authorize(Roles = "Admin,Manager")
+     
+        public async Task<IActionResult> DeleteGuest(string guestId)
         {
-            var result = await _sender.Send(new DeleteGuestCommand(guestId));
-            return result ? NoContent() : NotFound(new { message = $"Guest with ID {guestId} not found." });
+            try
+            {
+                var result = await _sender.Send(new DeleteGuestCommand(guestId));
+                return result ? NoContent() : NotFound();
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (BusinessRuleException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while processing your request." });
+            }
         }
     }
 }

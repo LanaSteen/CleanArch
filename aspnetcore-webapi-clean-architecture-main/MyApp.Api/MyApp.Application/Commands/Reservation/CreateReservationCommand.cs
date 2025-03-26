@@ -36,21 +36,17 @@ namespace MyApp.Application.Commands.Reservation
 
         public async Task<ReservationDto> Handle(CreateReservationCommand request, CancellationToken cancellationToken)
         {
-            // Validate guest/user exists
             var guest = await _userRepository.GetByIdAsync(request.ReservationRequest.GuestId);
             if (guest == null)
             {
                 throw new NotFoundException("User", request.ReservationRequest.GuestId);
             }
-
-            // Validate hotel exists
             var hotel = await _hotelRepository.GetHotelByIdAsync(request.ReservationRequest.HotelId);
             if (hotel == null)
             {
                 throw new NotFoundException("Hotel", request.ReservationRequest.HotelId);
             }
 
-            // Validate room exists
             var room = await _roomRepository.GetRoomByIdAsync(request.ReservationRequest.RoomId);
             if (room == null)
             {
@@ -62,19 +58,16 @@ namespace MyApp.Application.Commands.Reservation
                 throw new BusinessRuleException($"Room does not belong to the specified hotel");
             }
 
-            // Check room availability
             if (!room.IsAvailable)
             {
                 throw new BusinessRuleException("Room is not available for reservation");
             }
 
-            // Validate date range
             if (request.ReservationRequest.CheckInDate >= request.ReservationRequest.CheckOutDate)
             {
                 throw new BusinessRuleException("Check-out date must be after check-in date");
             }
 
-            // Check for overlapping reservations
             var hasOverlap = await _reservationRepository.HasOverlappingReservationAsync(
                 request.ReservationRequest.RoomId,
                 request.ReservationRequest.CheckInDate,

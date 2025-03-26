@@ -85,5 +85,10 @@ namespace MyApp.Infrastructure.Repositories
                               r.CheckOutDate > checkIn &&
                               r.CheckInDate < checkOut);
         }
+        public async Task<bool> HasReservationsForGuestAsync(string guestId)
+        {
+            return await _dbContext.Reservations
+                .AnyAsync(r => r.GuestId == guestId);
+        }
     }
 }

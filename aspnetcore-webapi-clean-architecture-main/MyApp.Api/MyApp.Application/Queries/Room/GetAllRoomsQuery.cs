@@ -15,9 +15,24 @@ namespace MyApp.Application.Queries.Room
     public class GetAllRoomsQueryHandler(IRoomRepository roomRepository, IMapper mapper)
         : IRequestHandler<GetAllRoomsQuery, List<RoomDto>>
     {
+       
         public async Task<List<RoomDto>> Handle(GetAllRoomsQuery request, CancellationToken cancellationToken)
         {
             var rooms = await roomRepository.GetAllRoomsAsync();
+
+
+            //foreach (var room in rooms)
+            //{
+            //    Console.WriteLine($"Room {room.Id} has {room.Reservations?.Count ?? 0} reservations");
+            //    if (room.Reservations != null)
+            //    {
+            //        foreach (var res in room.Reservations)
+            //        {
+            //            Console.WriteLine($"- Reservation {res.Id} for room {res.RoomId}");
+            //        }
+            //    }
+            //}
+
             return rooms.Select(mapper.Map<RoomDto>).ToList();
         }
     }

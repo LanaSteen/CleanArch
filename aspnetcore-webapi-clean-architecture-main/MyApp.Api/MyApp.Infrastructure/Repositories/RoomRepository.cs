@@ -23,17 +23,20 @@ namespace MyApp.Infrastructure.Repositories
         public async Task<RoomEntity> GetRoomByIdAsync(int roomId)
         {
             return await dbContext.Rooms
-                .Include(r => r.Hotel) 
-                .Include(r => r.Reservations) 
-                .FirstOrDefaultAsync(r => r.Id == roomId);
+                .Include(r => r.Hotel)
+                   .Include(r => r.Reservations)
+                   .ThenInclude(res => res.Guest) 
+                    .FirstOrDefaultAsync(r => r.Id == roomId);
         }
 
         public async Task<List<RoomEntity>> GetAllRoomsAsync()
         {
             return await dbContext.Rooms
-                .Include(r => r.Hotel) 
-                .Include(r => r.Reservations) 
-                .ToListAsync();
+          .Include(r => r.Hotel)
+          .Include(r => r.Reservations)
+              .ThenInclude(res => res.Guest) 
+          .AsNoTracking() 
+          .ToListAsync();
         }
 
         public async Task<RoomEntity> UpdateRoomAsync(RoomEntity room)

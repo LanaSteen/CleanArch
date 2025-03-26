@@ -36,14 +36,15 @@ namespace MyApp.Infrastructure.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<ReservationEntity>()
-                .HasOne(r => r.Guest)
-                .WithMany(g => g.Reservations)
-                .HasForeignKey(r => r.GuestId)
-                .OnDelete(DeleteBehavior.Restrict);
+       .HasOne(r => r.Room)
+       .WithMany(r => r.Reservations)
+       .HasForeignKey(r => r.RoomId);
 
             modelBuilder.Entity<RoomEntity>()
-                .Property(r => r.Price)
-                .HasPrecision(18, 4);
+            .HasMany(r => r.Reservations)
+            .WithOne(r => r.Room)
+            .HasForeignKey(r => r.RoomId)
+            .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<GuestEntity>()
                 .HasBaseType<UserEntity>();

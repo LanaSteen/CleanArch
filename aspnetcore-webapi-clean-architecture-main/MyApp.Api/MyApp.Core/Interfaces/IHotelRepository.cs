@@ -16,7 +16,6 @@ namespace MyApp.Core.Interfaces
         Task<(bool IsSuccess, string Message)> DeleteHotelAsync(int hotelId);
 
 
-        //Task<List<HotelEntity>> GetAllHotelsAsync();
         Task<List<HotelEntity>> GetHotelsByFilterAsync(string? country, string? city, int? minRating, int? maxRating);
     }
 }

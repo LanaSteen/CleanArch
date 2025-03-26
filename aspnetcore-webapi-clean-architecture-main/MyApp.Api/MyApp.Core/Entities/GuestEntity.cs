@@ -14,7 +14,6 @@ namespace MyApp.Core.Entities
             public string PersonalNumber { get; set; }
             public string PhoneNumber { get; set; }
 
-            // (M:M relationship)
             public ICollection<ReservationEntity> Reservations { get; set; }
 
 

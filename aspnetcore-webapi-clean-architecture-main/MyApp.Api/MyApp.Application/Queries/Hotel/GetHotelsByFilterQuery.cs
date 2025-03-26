@@ -18,7 +18,6 @@ namespace MyApp.Application.Queries.Hotel
         {
             var hotels = await hotelRepository.GetHotels();
 
-            // Apply filtering
             if (!string.IsNullOrWhiteSpace(request.Country))
             {
                 hotels = hotels.Where(h => h.Country.ToLower() == request.Country.ToLower()).ToList();
