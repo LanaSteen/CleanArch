@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyApp.Application.Commands.Reservation;
 using MyApp.Application.DTOs.Reservation;
+using MyApp.Application.Exceptions;
 using MyApp.Application.Queries.Reservation;
 using System.Collections.Generic;
 using System.Reflection;
@@ -38,6 +39,14 @@ namespace MyApp.Api.Controllers
             {
                 var result = await _sender.Send(new CreateReservationCommand(reservationRequest));
                 return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (BusinessRuleException ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
             catch (Exception ex)
             {

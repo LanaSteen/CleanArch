@@ -16,5 +16,7 @@ namespace MyApp.Core.Interfaces
         Task<bool> DeleteAsync(ReservationEntity entity);
 
         Task<bool> HasReservationsForRoomAsync(int roomId);
+        Task<bool> HasOverlappingReservationAsync(int roomId, DateTime checkIn, DateTime checkOut);
+
     }
 }

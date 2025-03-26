@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using MediatR;
-using MyApp.Application.DTOs.Guest;
 using MyApp.Application.DTOs.Reservation;
+using MyApp.Application.Exceptions;
 using MyApp.Core.Entities;
 using MyApp.Core.Interfaces;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MyApp.Application.Commands.Reservation
@@ -14,20 +15,20 @@ namespace MyApp.Application.Commands.Reservation
     public class CreateReservationCommandHandler : IRequestHandler<CreateReservationCommand, ReservationDto>
     {
         private readonly IReservationRepository _reservationRepository;
-        private readonly IGuestRepository _guestRepository;
+        private readonly IUserRepository _userRepository; // Changed from IGuestRepository
         private readonly IHotelRepository _hotelRepository;
         private readonly IRoomRepository _roomRepository;
         private readonly IMapper _mapper;
 
         public CreateReservationCommandHandler(
             IReservationRepository reservationRepository,
-            IGuestRepository guestRepository,
+            IUserRepository userRepository,
             IHotelRepository hotelRepository,
             IRoomRepository roomRepository,
             IMapper mapper)
         {
             _reservationRepository = reservationRepository;
-            _guestRepository = guestRepository;
+            _userRepository = userRepository;
             _hotelRepository = hotelRepository;
             _roomRepository = roomRepository;
             _mapper = mapper;
@@ -35,27 +36,53 @@ namespace MyApp.Application.Commands.Reservation
 
         public async Task<ReservationDto> Handle(CreateReservationCommand request, CancellationToken cancellationToken)
         {
-            var guest = await _guestRepository.GetByIdAsync(request.ReservationRequest.GuestId);
+            // Validate guest/user exists
+            var guest = await _userRepository.GetByIdAsync(request.ReservationRequest.GuestId);
             if (guest == null)
             {
-                throw new Exception($"Guest with ID {request.ReservationRequest.GuestId} not found.");
+                throw new NotFoundException("User", request.ReservationRequest.GuestId);
             }
 
+            // Validate hotel exists
             var hotel = await _hotelRepository.GetHotelByIdAsync(request.ReservationRequest.HotelId);
             if (hotel == null)
             {
-                throw new Exception($"Hotel with ID {request.ReservationRequest.HotelId} not found.");
+                throw new NotFoundException("Hotel", request.ReservationRequest.HotelId);
             }
 
+            // Validate room exists
             var room = await _roomRepository.GetRoomByIdAsync(request.ReservationRequest.RoomId);
             if (room == null)
             {
-                throw new Exception($"Room with ID {request.ReservationRequest.RoomId} not found.");
+                throw new NotFoundException("Room", request.ReservationRequest.RoomId);
             }
 
             if (room.HotelId != request.ReservationRequest.HotelId)
             {
-                throw new Exception($"Room with ID {request.ReservationRequest.RoomId} does not belong to the specified Hotel with ID {request.ReservationRequest.HotelId}.");
+                throw new BusinessRuleException($"Room does not belong to the specified hotel");
+            }
+
+            // Check room availability
+            if (!room.IsAvailable)
+            {
+                throw new BusinessRuleException("Room is not available for reservation");
+            }
+
+            // Validate date range
+            if (request.ReservationRequest.CheckInDate >= request.ReservationRequest.CheckOutDate)
+            {
+                throw new BusinessRuleException("Check-out date must be after check-in date");
+            }
+
+            // Check for overlapping reservations
+            var hasOverlap = await _reservationRepository.HasOverlappingReservationAsync(
+                request.ReservationRequest.RoomId,
+                request.ReservationRequest.CheckInDate,
+                request.ReservationRequest.CheckOutDate);
+
+            if (hasOverlap)
+            {
+                throw new BusinessRuleException("Room is already booked for the selected dates");
             }
 
             var reservationEntity = _mapper.Map<ReservationEntity>(request.ReservationRequest);

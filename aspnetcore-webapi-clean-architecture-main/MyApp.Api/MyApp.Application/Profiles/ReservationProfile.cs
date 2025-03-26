@@ -11,7 +11,11 @@ namespace MyApp.Application.Profiles
     {
         public ReservationProfile()
         {
-            CreateMap<ReservationEntity, ReservationDto>();
+            CreateMap<ReservationEntity, ReservationDto>()
+              .ForMember(dest => dest.GuestEmail, opt => opt.MapFrom(src => src.Guest.Email))
+              .ForMember(dest => dest.RoomName, opt => opt.MapFrom(src => src.Room.Name))
+              .ForMember(dest => dest.HotelName, opt => opt.MapFrom(src => src.Hotel.Name));
+
             CreateMap<CreateReservationRequest, ReservationEntity>();
             CreateMap<UpdateReservationRequest, ReservationEntity>();
         }
