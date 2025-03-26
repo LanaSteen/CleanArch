@@ -22,6 +22,9 @@ namespace MyApp.Application.Profiles
 
             CreateMap<CreateRoomRequest, RoomEntity>();
             CreateMap<UpdateRoomRequest, RoomEntity>();
+            CreateMap<UpdateRoomRequest, RoomEntity>()
+           .ForAllMembers(opts => opts.Condition((src, dest, srcMember) =>
+               srcMember != null)); 
         }
     }
     

@@ -14,5 +14,7 @@ namespace MyApp.Core.Interfaces
         Task<List<RoomEntity>> GetAllRoomsAsync();
         Task<RoomEntity> UpdateRoomAsync(RoomEntity room);
         Task<bool> DeleteRoomAsync(int roomId);
+        Task<bool> ExistsAsync(int roomId);
+
     }
 }

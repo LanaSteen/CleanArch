@@ -48,5 +48,9 @@ namespace MyApp.Infrastructure.Repositories
             _dbContext.Reservations.Remove(entity);
             return await _dbContext.SaveChangesAsync() > 0;
         }
+        public async Task<bool> HasReservationsForRoomAsync(int roomId)
+        {
+            return await _dbContext.Reservations.AnyAsync(r => r.RoomId == roomId);
+        }
     }
 }

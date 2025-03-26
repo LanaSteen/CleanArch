@@ -14,5 +14,7 @@ namespace MyApp.Core.Interfaces
         Task<ReservationEntity> AddAsync(ReservationEntity entity);
         Task<ReservationEntity> UpdateAsync(ReservationEntity entity);
         Task<bool> DeleteAsync(ReservationEntity entity);
+
+        Task<bool> HasReservationsForRoomAsync(int roomId);
     }
 }

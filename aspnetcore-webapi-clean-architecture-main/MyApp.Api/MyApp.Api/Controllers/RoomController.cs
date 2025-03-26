@@ -4,13 +4,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyApp.Application.Commands.Room;
 using MyApp.Application.DTOs.Room;
+using MyApp.Application.Exceptions;
 using MyApp.Application.Queries.Room;
 
 namespace MyApp.Api.Controllers
 {
     [Route("api/hotel/rooms")]
     [ApiController]
-    [Authorize(Roles = "Admin,Manager")]
+    //[Authorize(Roles = "Admin,Manager")]
     public class RoomController(ISender sender, IMapper mapper) : ControllerBase
     {
         [HttpPost("")]
@@ -21,8 +22,20 @@ namespace MyApp.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await sender.Send(new CreateRoomCommand(roomRequest));
-            return Ok(result);
+            try
+            {
+                var result = await sender.Send(new CreateRoomCommand(roomRequest));
+                return Ok(result);
+            }
+            catch (NotFoundException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if needed
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
         }
 
         [HttpGet]
@@ -54,15 +67,41 @@ namespace MyApp.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await sender.Send(new UpdateRoomCommand(roomId, roomRequest));
-            return result is null ? NotFound() : Ok(result);
+            try
+            {
+                var result = await sender.Send(new UpdateRoomCommand(roomId, roomRequest));
+                return result is null ? NotFound() : Ok(result);
+            }
+            catch (NotFoundException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
         }
 
         [HttpDelete("{roomId}")]
         public async Task<IActionResult> DeleteRoomAsync([FromRoute] int roomId)
         {
-            var result = await sender.Send(new DeleteRoomCommand(roomId));
-            return result ? NoContent() : NotFound();
+            try
+            {
+                var result = await sender.Send(new DeleteRoomCommand(roomId));
+                return result ? NoContent() : NotFound();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

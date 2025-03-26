@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MyApp.Application.Exceptions;
 using MyApp.Core.Entities;
 using MyApp.Core.Interfaces;
 using MyApp.Infrastructure.Data;
@@ -41,16 +42,26 @@ namespace MyApp.Infrastructure.Repositories
             await dbContext.SaveChangesAsync();
             return room;
         }
-
         public async Task<bool> DeleteRoomAsync(int roomId)
         {
-            var room = await dbContext.Rooms.FindAsync(roomId);
+            var room = await dbContext.Rooms
+                .Include(r => r.Reservations)
+                .FirstOrDefaultAsync(r => r.Id == roomId);
+
             if (room == null)
-                return false;
+                throw new NotFoundException("Room not found");
+
+            if (room.Reservations.Any())
+                throw new InvalidOperationException("Cannot delete room because it has existing reservations");
 
             dbContext.Rooms.Remove(room);
             await dbContext.SaveChangesAsync();
+
             return true;
+        }
+        public async Task<bool> ExistsAsync(int roomId)
+        {
+            return await dbContext.Rooms.AnyAsync(r => r.Id == roomId);
         }
     }
 }
