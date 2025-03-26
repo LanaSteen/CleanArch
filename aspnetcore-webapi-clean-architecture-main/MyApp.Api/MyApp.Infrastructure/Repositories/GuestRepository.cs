@@ -68,5 +68,10 @@ namespace MyApp.Infrastructure.Repositories
         {
             return await _dbContext.Guests.AnyAsync(g => g.Email == email);
         }
+        public async Task<UserEntity?> GetUserByGuestIdAsync(string guestId)
+        {
+            return await _dbContext.Users
+                .FirstOrDefaultAsync(u => u.Id == guestId);
+        }
     }
 }

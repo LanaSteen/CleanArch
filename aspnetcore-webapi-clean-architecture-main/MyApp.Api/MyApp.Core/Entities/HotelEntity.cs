@@ -12,9 +12,7 @@ public class HotelEntity
     public int ManagerId { get; set; }
     public ManagerEntity Manager { get; set; }
 
-    // Navigation property for Rooms (1:M relationship)
     public ICollection<RoomEntity> Rooms { get; set; }
 
-    // Navigation property for Reservations (M:M relationship)
     public ICollection<ReservationEntity> Reservations { get; set; }
 }

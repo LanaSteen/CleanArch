@@ -13,5 +13,7 @@ namespace MyApp.Core.Interfaces
         Task<GuestEntity> UpdateAsync(string guestId, Dictionary<string, object> updates);
         Task<bool> DeleteAsync(GuestEntity entity);
         Task<bool> EmailExistsAsync(string email);
+        Task<UserEntity?> GetUserByGuestIdAsync(string guestId);
+        //Task<bool> EmailExistsAsync(string email);
     }
 }

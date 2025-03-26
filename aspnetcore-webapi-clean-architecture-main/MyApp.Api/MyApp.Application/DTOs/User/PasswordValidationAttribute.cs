@@ -10,10 +10,10 @@ namespace MyApp.Application.DTOs
             var password = value as string;
             if (string.IsNullOrEmpty(password))
             {
-                return new ValidationResult("Password is required.");
+                //return new ValidationResult("Password is required.");
+                return ValidationResult.Success;
             }
 
-            // პაროლის ვალიდაცია
             var hasMinimumLength = password.Length >= 8;
             var hasUpperCase = Regex.IsMatch(password, "[A-Z]");
             var hasLowerCase = Regex.IsMatch(password, "[a-z]");

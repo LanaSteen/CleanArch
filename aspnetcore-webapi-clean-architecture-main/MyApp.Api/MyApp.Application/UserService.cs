@@ -30,7 +30,7 @@ namespace MyApp.Application.Services
 
             if (user == null || !_userRepository.VerifyPassword(user, password))
             {
-                return null; // ავტორიზაცია ვერ მოხერხდა
+                return null;
             }
 
             return user;

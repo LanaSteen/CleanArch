@@ -48,9 +48,8 @@ namespace MyApp.Api.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Policy = "AdminOnly")]
-        //[Authorize(Policy = "ManagerOnly")]
-        [Authorize(Roles = "Admin,Manager")]
+
+        //[Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> GetAllGuestsAsync()
         {
             var guests = await _sender.Send(new GetAllGuestsQuery());
@@ -59,7 +58,7 @@ namespace MyApp.Api.Controllers
         }
 
         [HttpGet("{guestId}")]
-        [Authorize(Roles = "Admin,Manager")]
+        //[Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> GetGuestByIdAsync([FromRoute] string guestId)
         {
             var result = await _sender.Send(new GetGuestByIdQuery(guestId));
@@ -71,7 +70,7 @@ namespace MyApp.Api.Controllers
         }
 
         [HttpPut("{guestId}")]
-        [Authorize(Roles = "Admin,Manager")]
+        //[Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> UpdateGuestAsync([FromRoute] string guestId, [FromBody] UpdateGuestRequest guestRequest)
         {
             try
@@ -96,7 +95,7 @@ namespace MyApp.Api.Controllers
         }
 
         [HttpDelete("{guestId}")]
-        [Authorize(Roles = "Admin,Manager")]
+        //[Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> DeleteGuestAsync([FromRoute] string guestId)
         {
             var result = await _sender.Send(new DeleteGuestCommand(guestId));

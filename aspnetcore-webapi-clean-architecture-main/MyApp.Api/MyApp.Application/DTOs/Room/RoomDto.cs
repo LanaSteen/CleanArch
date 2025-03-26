@@ -13,7 +13,7 @@ namespace MyApp.Application.DTOs.Room
         public string Name { get; set; }
         public bool IsAvailable { get; set; }
         public decimal Price { get; set; }
-        public string HotelName { get; set; }  // Hotel Name mapped from Hotel entity
-        public List<ReservationDto> Reservations { get; set; }  // Reservations mapped from Reservation entity
+        public string HotelName { get; set; }  
+        public List<ReservationDto> Reservations { get; set; } 
     }
 }
