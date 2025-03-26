@@ -92,17 +92,26 @@ namespace MyApp.Infrastructure.Repositories
 
         public async Task<bool> DeleteAsync(ManagerEntity manager)
         {
-            if (manager.HotelId.HasValue)
+            try
             {
-                var hotel = await _dbContext.Hotels.FindAsync(manager.HotelId.Value);
-                if (hotel != null)
+                if (manager.HotelId.HasValue)
                 {
-                    hotel.ManagerId = -1;
+                    var hotel = await _dbContext.Hotels.FindAsync(manager.HotelId.Value);
+                    if (hotel != null)
+                    {
+                        hotel.ManagerId = 0; 
+                        _dbContext.Hotels.Update(hotel);
+                    }
                 }
-            }
 
-            _dbContext.Managers.Remove(manager);
-            return await _dbContext.SaveChangesAsync() > 0;
+                _dbContext.Managers.Remove(manager);
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
         public async Task<UserEntity> GetUserByManagerIdAsync(int managerId)
         {

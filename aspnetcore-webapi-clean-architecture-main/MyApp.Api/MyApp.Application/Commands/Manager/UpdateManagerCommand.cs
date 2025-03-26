@@ -31,16 +31,45 @@ namespace MyApp.Application.Commands.Manager
                 throw new NotFoundException("Manager not found.");
             }
 
-            if (!string.IsNullOrEmpty(request.ManagerRequest.Email) &&
-                request.ManagerRequest.Email != managerEntity.Email &&
-                await _managerRepository.EmailExistsAsync(request.ManagerRequest.Email))
+            var user = await _managerRepository.GetUserByManagerIdAsync(request.Id);
+            if (user == null)
             {
-                throw new ApplicationException("Email is already in use.");
+                throw new NotFoundException("User account not found for this manager.");
             }
 
-            _mapper.Map(request.ManagerRequest, managerEntity);
+            if (!string.IsNullOrEmpty(request.ManagerRequest.Email) &&
+                request.ManagerRequest.Email != managerEntity.Email)
+            {
+                if (await _managerRepository.EmailExistsAsync(request.ManagerRequest.Email))
+                {
+                    throw new ApplicationException("Email is already in use.");
+                }
+
+                managerEntity.Email = request.ManagerRequest.Email;
+                user.Email = request.ManagerRequest.Email;
+            }
+
+            if (!string.IsNullOrEmpty(request.ManagerRequest.FirstName))
+                managerEntity.FirstName = request.ManagerRequest.FirstName;
+
+            if (!string.IsNullOrEmpty(request.ManagerRequest.LastName))
+                managerEntity.LastName = request.ManagerRequest.LastName;
+
+            if (!string.IsNullOrEmpty(request.ManagerRequest.PersonalNumber))
+                managerEntity.PersonalNumber = request.ManagerRequest.PersonalNumber;
+
+            if (request.ManagerRequest.HotelId.HasValue)
+                managerEntity.HotelId = request.ManagerRequest.HotelId.Value;
+
+            if (!string.IsNullOrEmpty(request.ManagerRequest.Password))
+            {
+                var newPasswordHash = request.ManagerRequest.Password;
+                managerEntity.PasswordHash = newPasswordHash;
+                user.PasswordHash = newPasswordHash;
+            }
 
             var updatedManager = await _managerRepository.UpdateAsync(managerEntity);
+            await _managerRepository.UpdateUserAsync(user);
 
             return _mapper.Map<ManagerDto>(updatedManager);
         }
