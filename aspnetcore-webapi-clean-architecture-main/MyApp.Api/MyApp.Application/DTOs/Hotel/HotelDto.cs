@@ -12,5 +12,5 @@ public class HotelDto
     public int? ManagerId { get; set; }
     public string? ManagerName { get; set; }
     public ICollection<RoomDto>? Rooms { get; set; }
-    public ICollection<ReservationDto>? Reservations { get; set; }
+    //public ICollection<ReservationDto>? Reservations { get; set; }
 }

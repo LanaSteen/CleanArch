@@ -26,7 +26,7 @@ namespace MyApp.Api.Controllers
 
 
         [HttpPost]
-        //[Authorize(Policy = "AdminOnly")]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> CreateManagerAsync([FromBody] CreateManagerRequest managerRequest)
         {
             try
@@ -50,7 +50,7 @@ namespace MyApp.Api.Controllers
         }
 
         [HttpGet("All")]
-        //[Authorize(Policy = "AdminOnly")]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> GetAllManagersAsync()
         {
             var managers = await _sender.Send(new GetAllManagersQuery());
@@ -59,7 +59,7 @@ namespace MyApp.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        //[Authorize(Policy = "AdminOnly")]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> GetManagerByIdAsync([FromRoute] int id)
         {
             var manager = await _sender.Send(new GetManagerByIdQuery(id));

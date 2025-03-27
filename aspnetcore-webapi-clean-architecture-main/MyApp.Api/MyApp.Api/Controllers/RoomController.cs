@@ -11,7 +11,7 @@ namespace MyApp.Api.Controllers
 {
     [Route("api/hotel/[controller]")]
     [ApiController]
-    //[Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = "Admin,Manager")]
     public class RoomController(ISender sender, IMapper mapper) : ControllerBase
     {
         [HttpPost("")]
@@ -33,7 +33,6 @@ namespace MyApp.Api.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception if needed
                 return StatusCode(500, "An error occurred while processing your request.");
             }
         }
