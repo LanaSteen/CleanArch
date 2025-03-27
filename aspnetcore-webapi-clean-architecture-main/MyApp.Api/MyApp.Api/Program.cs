@@ -20,8 +20,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "MyApp API", Version = "v1" });
-
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Hotel Management System", 
+        Version = "v1",
+        Description = "API for managing hotels and their reservations",
+        Contact = new OpenApiContact
+        {
+            Name = "Lana Steen",
+            Email = "L4n.Steen@gmail.com"
+        }
+    });
     // JWT
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -104,7 +113,15 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseStaticFiles();
+    app.UseSwaggerUI(c =>
+    {
+        
+        c.DocumentTitle = "Hotel Management System";
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Hotel Management System");
+        c.InjectStylesheet("/swagger-ui/custom-swagger.css");
+    });
+
 }
 app.UseStatusCodePages(async context =>
 {
