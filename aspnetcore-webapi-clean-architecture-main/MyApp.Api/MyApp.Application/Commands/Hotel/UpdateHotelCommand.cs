@@ -2,25 +2,31 @@
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
+using MyApp.Application.DTOs.Hotel;
 using MyApp.Core.Entities;
 using MyApp.Core.Interfaces;
 
 namespace MyApp.Application.Commands.Hotel
 {
-    public record UpdateHotelCommand(int HotelId, HotelEntity Hotel) : IRequest<HotelEntity>;
+    public record UpdateHotelCommand(int HotelId, UpdateHotelRequest HotelRequest) : IRequest<HotelDto>;
 
-    public class UpdateHotelCommandHandler : IRequestHandler<UpdateHotelCommand, HotelEntity>
+    public class UpdateHotelCommandHandler : IRequestHandler<UpdateHotelCommand, HotelDto>
     {
         private readonly IHotelRepository _hotelRepository;
         private readonly IValidator<UpdateHotelCommand> _validator;
+        private readonly IMapper _mapper;
 
-        public UpdateHotelCommandHandler(IHotelRepository hotelRepository, IValidator<UpdateHotelCommand> validator)
+        public UpdateHotelCommandHandler(
+            IHotelRepository hotelRepository,
+            IValidator<UpdateHotelCommand> validator,
+            IMapper mapper)
         {
             _hotelRepository = hotelRepository;
             _validator = validator;
+            _mapper = mapper;
         }
 
-        public async Task<HotelEntity> Handle(UpdateHotelCommand request, CancellationToken cancellationToken)
+        public async Task<HotelDto> Handle(UpdateHotelCommand request, CancellationToken cancellationToken)
         {
             ValidationResult validationResult = await _validator.ValidateAsync(request, cancellationToken);
             if (!validationResult.IsValid)
@@ -34,40 +40,30 @@ namespace MyApp.Application.Commands.Hotel
                 throw new KeyNotFoundException("Hotel not found");
             }
 
-            if (request.Hotel.Rating < 0 || request.Hotel.Rating > 5)
+            if (request.HotelRequest.Rating.HasValue &&
+                (request.HotelRequest.Rating < 0 || request.HotelRequest.Rating > 5))
             {
                 throw new ArgumentException("Rating must be between 0 and 5.");
             }
-            if (!string.IsNullOrEmpty(request.Hotel.Name))
-            {
-                existingHotel.Name = request.Hotel.Name;
-            }
-            if (!string.IsNullOrEmpty(request.Hotel.Country))
-            {
-                existingHotel.Country = request.Hotel.Country;
-            }
 
-            if (!string.IsNullOrEmpty(request.Hotel.City))
-            {
-                existingHotel.City = request.Hotel.City;
-            }
+            if (!string.IsNullOrEmpty(request.HotelRequest.Name))
+                existingHotel.Name = request.HotelRequest.Name;
 
-            if (!string.IsNullOrEmpty(request.Hotel.Address))
-            {
-                existingHotel.Address = request.Hotel.Address;
-            }
+            if (request.HotelRequest.Rating.HasValue)
+                existingHotel.Rating = request.HotelRequest.Rating.Value;
 
-            if (request.Hotel.Rating != default(int))
-            {
-                existingHotel.Rating = request.Hotel.Rating;
-            }
+            if (!string.IsNullOrEmpty(request.HotelRequest.Country))
+                existingHotel.Country = request.HotelRequest.Country;
 
-            if (request.Hotel.ManagerId != default(int))
-            {
-                existingHotel.ManagerId = request.Hotel.ManagerId;
-            }
+            if (!string.IsNullOrEmpty(request.HotelRequest.City))
+                existingHotel.City = request.HotelRequest.City;
 
-            return await _hotelRepository.UpdateHotelAsync(request.HotelId, existingHotel);
+            if (!string.IsNullOrEmpty(request.HotelRequest.Address))
+                existingHotel.Address = request.HotelRequest.Address;
+
+            var updatedHotel = await _hotelRepository.UpdateHotelAsync(request.HotelId, existingHotel);
+
+            return _mapper.Map<HotelDto>(updatedHotel);
         }
     }
 }

@@ -97,30 +97,26 @@ namespace HotelManagementSystem.Controllers
 
             try
             {
-                var existingHotelDto = await _sender.Send(new GetHotelByIdQuery(hotelId));
-                if (existingHotelDto == null)
-                {
-                    return NotFound();
-                }
-
-                var existingHotelEntity = _mapper.Map<HotelEntity>(existingHotelDto);
-                _mapper.Map(updateHotelRequest, existingHotelEntity);
-
-                var updatedHotelEntity = await _sender.Send(new UpdateHotelCommand(hotelId, existingHotelEntity));
-
-                var hotelDto = _mapper.Map<HotelDto>(updatedHotelEntity);
+                // Option 1: Directly use the UpdateHotelRequest with the command
+                var updatedHotel = await _sender.Send(new UpdateHotelCommand(hotelId, updateHotelRequest));
+                var hotelDto = _mapper.Map<HotelDto>(updatedHotel);
                 return Ok(hotelDto);
+
+                // OR Option 2: If you need to preserve the existing approach:
+                // var existingHotel = await _hotelRepository.GetHotelByIdAsync(hotelId);
+                // if (existingHotel == null) return NotFound();
+                // _mapper.Map(updateHotelRequest, existingHotel);
+                // var updatedHotel = await _hotelRepository.UpdateHotelAsync(hotelId, existingHotel);
+                // return Ok(_mapper.Map<HotelDto>(updatedHotel));
             }
             catch (ValidationException ex)
             {
                 _logger.LogError($"Validation failed: {ex.Message}");
-
                 return BadRequest(new { message = $"Validation failed: {ex.Message}", details = ex.Errors });
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Unexpected error: {ex.Message}");
-
                 return StatusCode(500, new { message = "Internal server error", details = ex.Message });
             }
         }
