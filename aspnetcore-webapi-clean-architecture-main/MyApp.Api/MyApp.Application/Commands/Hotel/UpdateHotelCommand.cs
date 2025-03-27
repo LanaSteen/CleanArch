@@ -42,6 +42,10 @@ namespace MyApp.Application.Commands.Hotel
             {
                 existingHotel.Name = request.Hotel.Name;
             }
+            if (!string.IsNullOrEmpty(request.Hotel.Country))
+            {
+                existingHotel.Country = request.Hotel.Country;
+            }
 
             if (!string.IsNullOrEmpty(request.Hotel.City))
             {

@@ -22,14 +22,18 @@ namespace MyApp.Application.Profiles
 
             CreateMap<HotelEntity, HotelDto>()
                 .ForMember(dest => dest.ManagerId, opt =>
-                    opt.MapFrom(src => src.Manager != null ? src.Manager.Id : (int?)null));
+                    opt.MapFrom(src => src.Manager != null ? src.Manager.Id : (int?)null))
+                .ForMember(dest => dest.ManagerName, opt =>
+                    opt.MapFrom(src => src.Manager != null ? src.Manager.FirstName : null))
+                .ForMember(dest => dest.Rooms, opt => opt.MapFrom(src => src.Rooms))
+                .ForMember(dest => dest.Reservations, opt => opt.MapFrom(src => src.Reservations));
 
             CreateMap<UpdateHotelRequest, HotelEntity>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
-            CreateMap<UpdateHotelRequest, HotelEntity>()
-             .ForMember(dest => dest.ManagerId, opt => opt.Ignore());
+           CreateMap<UpdateHotelRequest, HotelEntity>().ForMember(dest => dest.ManagerId, opt => opt.Ignore());
+
             CreateMap<HotelDto, HotelEntity>()
-         .ForMember(dest => dest.ManagerId, opt => opt.Condition(src => src.ManagerId.HasValue)); 
+                .ForMember(dest => dest.ManagerId, opt => opt.Condition(src => src.ManagerId.HasValue));
 
         }
     }

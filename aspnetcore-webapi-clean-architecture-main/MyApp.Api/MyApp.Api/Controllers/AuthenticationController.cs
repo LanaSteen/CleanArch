@@ -8,7 +8,7 @@ using System;
 namespace MyApp.Web.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/hotel/[controller]")]
     public class AuthenticationController : ControllerBase
     {
         private readonly IUserRepository _userRepository;

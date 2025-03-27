@@ -1,17 +1,27 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using MyApp.Core.Entities;
 using MyApp.Core.Interfaces;
 
 namespace MyApp.Application.Queries.Hotel
 {
-    public record GetAllHotelsQuery() : IRequest<IEnumerable<HotelEntity>>;
+    public record GetAllHotelsQuery() : IRequest<IEnumerable<HotelDto>>;
 
-    public class GetAllHotelsQueryHandler(IHotelRepository hotelRepository)
-        : IRequestHandler<GetAllHotelsQuery, IEnumerable<HotelEntity>>
+    public class GetAllHotelsQueryHandler : IRequestHandler<GetAllHotelsQuery, IEnumerable<HotelDto>>
     {
-        public async Task<IEnumerable<HotelEntity>> Handle(GetAllHotelsQuery request, CancellationToken cancellationToken)
+        private readonly IHotelRepository _hotelRepository;
+        private readonly IMapper _mapper;
+
+        public GetAllHotelsQueryHandler(IHotelRepository hotelRepository, IMapper mapper)
         {
-            return await hotelRepository.GetHotels();
+            _hotelRepository = hotelRepository;
+            _mapper = mapper;
+        }
+
+        public async Task<IEnumerable<HotelDto>> Handle(GetAllHotelsQuery request, CancellationToken cancellationToken)
+        {
+            var hotels = await _hotelRepository.GetHotels();
+            return _mapper.Map<IEnumerable<HotelDto>>(hotels);
         }
     }
 }

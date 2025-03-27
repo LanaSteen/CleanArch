@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace MyApp.Api.Controllers
 {
-    [Route("api/hotel/reservations")]
+    [Route("api/hotel/[controller]")]
     [ApiController]
     //[Authorize(Policy = "GuestOnly")]
     //[Authorize(Roles = "Admin,Manager,Guest")]
@@ -54,7 +54,7 @@ namespace MyApp.Api.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("All")]
         public async Task<IActionResult> GetAllReservationsAsync()
         {
             var reservations = await _sender.Send(new GetAllReservationsQuery());
@@ -81,8 +81,23 @@ namespace MyApp.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _sender.Send(new UpdateReservationCommand(reservationId, reservationRequest));
-            return result is null ? NotFound() : Ok(result);
+            try
+            {
+                var result = await _sender.Send(new UpdateReservationCommand(reservationId, reservationRequest));
+                return Ok(result);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (BusinessRuleException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred" });
+            }
         }
 
         [HttpDelete("{reservationId}")]

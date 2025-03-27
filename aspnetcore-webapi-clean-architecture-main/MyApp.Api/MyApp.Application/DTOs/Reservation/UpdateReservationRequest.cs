@@ -8,10 +8,10 @@ namespace MyApp.Application.DTOs.Reservation
 {
     public class UpdateReservationRequest
     {
-        public DateTime CheckInDate { get; set; }
-        public DateTime CheckOutDate { get; set; }
-        public int HotelId { get; set; }
-        public int RoomId { get; set; }
-        public int GuestId { get; set; }
+        public DateTime? CheckInDate { get; set; }
+        public DateTime? CheckOutDate { get; set; }
+        public int? HotelId { get; set; }
+        public int? RoomId { get; set; }
+        public string? GuestId { get; set; }
     }
 }

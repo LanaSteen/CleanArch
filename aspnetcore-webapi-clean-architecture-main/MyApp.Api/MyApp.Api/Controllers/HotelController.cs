@@ -12,7 +12,7 @@ using FluentValidation;
 
 namespace HotelManagementSystem.Controllers
 {
-    [Route("api/hotel/hotels")]
+    [Route("api/hotel/[controller]")]
     [ApiController]
     public class HotelController : ControllerBase
     {
@@ -60,7 +60,7 @@ namespace HotelManagementSystem.Controllers
             }
         }
 
-        [HttpGet("")]
+        [HttpGet("All")]
         public async Task<IActionResult> GetAllHotelsAsync()
         {
             var result = await _sender.Send(new GetAllHotelsQuery());

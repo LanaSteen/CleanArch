@@ -14,7 +14,11 @@ namespace MyApp.Infrastructure.Repositories
     {
         public async Task<IEnumerable<HotelEntity>> GetHotels()
         {
-            return await dbContext.Hotels.ToListAsync();
+            return await dbContext.Hotels
+            .Include(h => h.Manager) 
+              .Include(h => h.Rooms)    
+               .Include(h => h.Reservations)
+                 .ToListAsync();
         }
 
         public async Task<HotelEntity?> GetHotelByIdAsync(int id)

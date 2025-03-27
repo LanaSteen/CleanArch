@@ -18,6 +18,7 @@ namespace MyApp.Core.Interfaces
         Task<bool> HasReservationsForRoomAsync(int roomId);
         Task<bool> HasOverlappingReservationAsync(int roomId, DateTime checkIn, DateTime checkOut);
         Task<bool> HasReservationsForGuestAsync(string guestId);
+        Task<bool> HasOverlappingReservationAsync(int roomId, DateTime checkIn, DateTime checkOut, int? excludeReservationId = null);
 
     }
 }

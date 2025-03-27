@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MyApp.Api.Controllers
 {
-    [Route("api/hotel/guests")]
+    [Route("api/hotel/[controller]")]
     [ApiController]
     public class GuestController : ControllerBase
     {
@@ -48,7 +48,7 @@ namespace MyApp.Api.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("All")]
 
         //[Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> GetAllGuestsAsync()

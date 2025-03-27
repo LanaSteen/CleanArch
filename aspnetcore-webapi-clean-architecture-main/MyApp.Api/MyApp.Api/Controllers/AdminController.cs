@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace MyApp.Web.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/hotel/[controller]")]
     public class AdminController : ControllerBase
     {
         private readonly AppDbContext _dbContext;

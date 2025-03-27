@@ -9,7 +9,7 @@ using MyApp.Application.Queries.Room;
 
 namespace MyApp.Api.Controllers
 {
-    [Route("api/hotel/rooms")]
+    [Route("api/hotel/[controller]")]
     [ApiController]
     //[Authorize(Roles = "Admin,Manager")]
     public class RoomController(ISender sender, IMapper mapper) : ControllerBase
@@ -38,7 +38,7 @@ namespace MyApp.Api.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("All")]
         public async Task<IActionResult> GetAllRoomsAsync()
         {
             var rooms = await sender.Send(new GetAllRoomsQuery());

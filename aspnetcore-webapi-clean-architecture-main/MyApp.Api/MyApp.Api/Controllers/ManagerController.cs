@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MyApp.Api.Controllers
 {
-    [Route("api/hotel/managers")]
+    [Route("api/hotel/[controller]")]
 
     public class ManagerController : ControllerBase
     {
@@ -49,7 +49,7 @@ namespace MyApp.Api.Controllers
             }
         }
 
-        [HttpGet("")]
+        [HttpGet("All")]
         //[Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> GetAllManagersAsync()
         {

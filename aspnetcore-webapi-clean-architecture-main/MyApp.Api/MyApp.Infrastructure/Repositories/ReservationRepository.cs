@@ -90,5 +90,19 @@ namespace MyApp.Infrastructure.Repositories
             return await _dbContext.Reservations
                 .AnyAsync(r => r.GuestId == guestId);
         }
+        public async Task<bool> HasOverlappingReservationAsync( int roomId, DateTime checkIn, DateTime checkOut,int? excludeReservationId = null)
+        {
+            var query = _dbContext.Reservations
+                .Where(r => r.RoomId == roomId &&
+                           r.CheckOutDate > checkIn &&
+                           r.CheckInDate < checkOut);
+
+            if (excludeReservationId.HasValue)
+            {
+                query = query.Where(r => r.Id != excludeReservationId.Value);
+            }
+
+            return await query.AnyAsync();
+        }
     }
 }
